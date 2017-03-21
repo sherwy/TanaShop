@@ -4,7 +4,7 @@ import javax.persistence.*;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "orderline", catalog = "tana_shopping")
-@AssociationOverrides({ @AssociationOverride(name = "pk.order", joinColumns = @JoinColumn(name = "order_id")),
+@AssociationOverrides({ @AssociationOverride(name = "pk.orders", joinColumns = @JoinColumn(name = "order_id")),
 		@AssociationOverride(name = "pk.product", joinColumns = @JoinColumn(name = "product_id")) })
 public class OrderLine implements java.io.Serializable {
 

@@ -9,5 +9,7 @@ import com.tana.entities.Account;
 public interface AccountRepository extends CrudRepository<Account,Long>{
 	List<Account> findAll();
 	
+	Account findByAccountId(long id);
+	
 	Account findByUsername(String username);
 }

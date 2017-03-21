@@ -4,18 +4,22 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import org.hibernate.annotations.Parameter;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import org.hibernate.annotations.GenericGenerator;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "receiver", catalog = "tana_shopping")
 public class Receiver implements java.io.Serializable {
-	private long orderId;
-	private Order order;
+	private long receiverId;
+	private Orders orders;
 	private String receiverName;
 	private String address;
 	private String province;
@@ -26,10 +30,10 @@ public class Receiver implements java.io.Serializable {
 	
 	
 
-	public Receiver(long orderId, Order order, String receiverName, String address, String province, String zipCode) {
+	public Receiver(long receiverId, Orders orders, String receiverName, String address, String province, String zipCode) {
 		super();
-		this.orderId = orderId;
-		this.order = order;
+		this.receiverId = receiverId;
+		this.orders = orders;
 		this.receiverName = receiverName;
 		this.address = address;
 		this.province = province;
@@ -38,26 +42,27 @@ public class Receiver implements java.io.Serializable {
 
 
 
-	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "order"))
+	
 	@Id
-	@GeneratedValue(generator = "generator")
-	@Column(name = "order_id", unique = true, nullable = false)
-	public long getOrderId() {
-		return orderId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "receiver_id", unique = true, nullable = false)
+	public long getReceiverId() {
+		return receiverId;
 	}
 
-	public void setOrderId(long orderId) {
-		this.orderId = orderId;
+	public void setReceiverId(long receiverId) {
+		this.receiverId = receiverId;
 	}
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@PrimaryKeyJoinColumn
-	public Order getOrder() {
-		return order;
+	@JsonManagedReference
+	public Orders getOrders() {
+		return orders;
 	}
 
-	public void setOrder(Order order) {
-		this.order = order;
+	public void setOrders(Orders orders) {
+		this.orders = orders;
 	}
 
 	@Column(name = "receiver_name", nullable = false)

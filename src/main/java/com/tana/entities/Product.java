@@ -3,6 +3,8 @@ package com.tana.entities;
 import java.util.List;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 @SuppressWarnings("serial")
 @Entity
 @Table(name="product", catalog = "tana_shopping")
@@ -75,7 +77,7 @@ public class Product implements java.io.Serializable {
 		this.productDetail = productDetail;
 	}
 	
-	@OneToMany(fetch=FetchType.EAGER,mappedBy="pk.product")
+	@OneToMany(fetch=FetchType.LAZY,mappedBy="pk.product")
 	public List<OrderLine> getListOrder() {
 		return listOrder;
 	}

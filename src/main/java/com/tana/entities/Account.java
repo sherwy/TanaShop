@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name="account", catalog = "tana_shopping")
@@ -16,12 +18,13 @@ public class Account implements java.io.Serializable {
 	private String gender;
 	private String birthDate;
 	private String telephoneNumber;
-	private List<Order> listOrder;
+	private String role;
+	private List<Orders> listOrder;
 	
 	public Account(){}
 	
 	public Account(long accountId, String username, String password, String firstName, String lastName, String gender,
-			String birthDate, String telephoneNumber, List<Order> listOrder) {
+			String birthDate, String telephoneNumber, List<Orders> listOrder,String role) {
 		super();
 		this.accountId = accountId;
 		this.username = username;
@@ -32,6 +35,7 @@ public class Account implements java.io.Serializable {
 		this.birthDate = birthDate;
 		this.telephoneNumber = telephoneNumber;
 		this.listOrder = listOrder;
+		this.role = role;
 	}
 
 
@@ -110,14 +114,23 @@ public class Account implements java.io.Serializable {
 	}
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="customer")
-	public List<Order> getListOrder() {
+	@JsonManagedReference
+	public List<Orders> getListOrder() {
 		return listOrder;
 	}
 
-	public void setListOrder(List<Order> listOrder) {
+	public void setListOrder(List<Orders> listOrder) {
 		this.listOrder = listOrder;
 	}
-	
+
+	@Column(name="role",nullable=false)
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
 	
 	
 	

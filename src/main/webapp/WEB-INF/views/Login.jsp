@@ -1,6 +1,6 @@
 
 <jsp:include page="../componant/header.jsp" flush="true">
-	<jsp:param name="title" value="Index" />
+	<jsp:param name="title" value="Login" />
 </jsp:include>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <form:form action="/login" method="POST" modelAttribute="account">

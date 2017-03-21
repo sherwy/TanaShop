@@ -1,29 +1,28 @@
 package com.tana.entities;
 
 import javax.persistence.*;
+
 @SuppressWarnings("serial")
 @Embeddable
 public class OrderLineId implements java.io.Serializable{
-	private Order order;
+	private Orders orders;
 	private Product product;
 	
 	public OrderLineId(){}
 	
-	public OrderLineId(Order order, Product product) {
+	public OrderLineId(Orders orders, Product product) {
 		super();
-		this.order = order;
+		this.orders = orders;
 		this.product = product;
 	}
 
-
-
 	@ManyToOne
-	public Order getOrder() {
-		return order;
+	public Orders getOrders() {
+		return orders;
 	}
 
-	public void setOrder(Order order) {
-		this.order = order;
+	public void setOrders(Orders orders) {
+		this.orders = orders;
 	}
 
 	@ManyToOne
@@ -41,7 +40,7 @@ public class OrderLineId implements java.io.Serializable{
 
         OrderLineId that = (OrderLineId) o;
 
-        if (order != null ? !order.equals(that.order) : that.order != null) return false;
+        if (orders != null ? !orders.equals(that.orders) : that.orders != null) return false;
         if (product != null ? !product.equals(that.product) : that.product != null)
             return false;
 
@@ -50,7 +49,7 @@ public class OrderLineId implements java.io.Serializable{
 
     public int hashCode() {
         int result;
-        result = (order != null ? order.hashCode() : 0);
+        result = (orders != null ? orders.hashCode() : 0);
         result = 31 * result + (product != null ? product.hashCode() : 0);
         return result;
     }
