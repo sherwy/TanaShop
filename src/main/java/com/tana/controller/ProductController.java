@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -81,10 +82,37 @@ public class ProductController {
 		return "index";
 	}
 	@GetMapping(value = "/listProduct")
-	public String doListProduct(ModelMap model) {
-		List<Product> listProduct = productManager.findAll();
-		model.addAttribute("listProduct", listProduct);
-		return "ListProduct";
+	public String doListProduct(HttpSession session,ModelMap model) {
+		Account account = SessionUtility.getAccount(session);
+		if (account != null) {
+
+			List<Product> listProduct = productManager.findAll();
+			Orders order = ordersManager.findCartByAccountId(account.getAccountId());
+			List<Product> listAvaliableProduct = new ArrayList<>();
+			List<Product> listNotAvaliableProduct = new ArrayList<>();
+			for(OrderLine orderLine : order.getListProduct()){
+				Product product = orderLine.getPk().getProduct();
+				boolean isAvaliable = false;
+				for(Product allProduct : listProduct){
+					if(product.getProductId() == allProduct.getProductId()){
+						listAvaliableProduct.add(product);
+						isAvaliable = true;
+						break;
+					}
+				}
+				if(!isAvaliable){
+					listNotAvaliableProduct.add(product);
+				}
+			}
+			
+
+			model.addAttribute("listAvaProduct", listAvaliableProduct);
+			model.addAttribute("listNotAvaProduct", listNotAvaliableProduct);
+			return "ListProduct";
+		
+		}else{
+			return "redirect:index";
+		}
 	}
 
 	@RequestMapping(value = "/editProduct/{productId}", method = RequestMethod.GET)

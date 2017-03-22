@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.tana.entities.Account;
+
 @Controller
 public class IndexController {
 	
@@ -13,6 +15,7 @@ public class IndexController {
 	@GetMapping("/")
 	public String start(Model model) {
 		LOGGER.info("Redirect to index page");
+		model.addAttribute("account",new Account());
 		return "index";
 	}
 	

@@ -37,9 +37,10 @@ public class CartController {
 		if (account != null) {
 
 			Orders order = ordersManager.findCartByAccountId(account.getAccountId());
-
-			model.addAttribute("order", order);
-			model.addAttribute("orderId", order.getOrderId());
+			if (order != null) {
+				model.addAttribute("order", order);
+				model.addAttribute("orderId", order.getOrderId());
+			}
 			model.addAttribute("orderList", new Orders());
 			return "MyCart";
 		} else {
@@ -61,10 +62,10 @@ public class CartController {
 
 				orderLineManager.updateAmountByOrderIdAndProductId(amount, orderId, productId);
 				LOGGER.info("Order " + orderId + " : Update amount to " + amount + " on product id " + productId);
-				
+
 				String statusString = OrderStatus.ORDER_PENDING_PAYMENT.getStatus();
-				ordersManager.updateOrderStatusByOrderId(orderId,statusString);
-				LOGGER.info("Order ID : "+orderId+" to " + statusString);
+				ordersManager.updateOrderStatusByOrderId(orderId, statusString);
+				LOGGER.info("Order ID : " + orderId + " to " + statusString);
 			}
 		}
 		return "redirect:index";
