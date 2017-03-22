@@ -17,40 +17,41 @@ import com.tana.entities.Account;
 
 @Controller
 public class LoginController {
-	
+
 	private Logger LOGGER = Logger.getLogger(LoginController.class);
-	
+
 	@Autowired
 	private AccountRepository accountRepository;
-	
+
 	@ModelAttribute("account")
-	public Account getAccount(){
+	public Account getAccount() {
 		return new Account();
 	}
-	
+
 	@GetMapping("/login")
 	public String goToLogin(Model model) {
 		LOGGER.info("Redirect to login page");
-		return "Login";
+		model.addAttribute("user", new Account());
+		return "redirect:index";
 	}
-	
+
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String doLogin(@ModelAttribute("SpringWeb") Account accountLogin,HttpSession session,ModelMap model) {
+	public String doLogin(@ModelAttribute("SpringWeb") Account accountLogin, HttpSession session, ModelMap model) {
 		Account account = accountRepository.findByUsername(accountLogin.getUsername());
-		if(account != null){
-			if(account.getPassword().equals(accountLogin.getPassword())){
-				LOGGER.info("Logging in as '"+account.getUsername()+"' successfully");
+		if (account != null) {
+			if (account.getPassword().equals(accountLogin.getPassword())) {
+				LOGGER.info("Logging in as '" + account.getUsername() + "' successfully");
 				session.setAttribute("user", account);
-				return "index";
+				return "redirect:index";
 			}
 		}
-		return "Login";
+		return "redirect:index";
 	}
-	
+
 	@RequestMapping(value = "/logout")
-	public String doLogout(HttpSession session,ModelMap model) {
+	public String doLogout(HttpSession session, ModelMap model) {
 		session.removeAttribute("user");
-		return "index";
+		return "redirect:index";
 	}
-	
+
 }
