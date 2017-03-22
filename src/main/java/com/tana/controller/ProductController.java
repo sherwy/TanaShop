@@ -83,38 +83,31 @@ public class ProductController {
 	}
 	@GetMapping(value = "/listProduct")
 	public String doListProduct(HttpSession session,ModelMap model) {
-		Account account = SessionUtility.getAccount(session);	
+		Account account = SessionUtility.getAccount(session);
 		if (account != null) {
 
 			List<Product> listProduct = productManager.findAll();
-			Orders orders = ordersManager.findCartByAccountId(account.getAccountId());
-
+			Orders order = ordersManager.findCartByAccountId(account.getAccountId());
 			List<Product> listAvaliableProduct = new ArrayList<>();
-			if(orders == null){
-				for(Product product : listProduct){
-					listAvaliableProduct.add(product);
-				}
-			}else{
-				List<Product> listNotAvaliableProduct = new ArrayList<>();
-				for(Product product : listProduct){
-					boolean isAvaliable = true;
-					for(OrderLine orderLine : orders.getListProduct()){
-						Product cartProduct = orderLine.getPk().getProduct();
-						if(product.getProductId() == cartProduct.getProductId()){
-							listNotAvaliableProduct.add(product);
-							LOGGER.info("Product ("+product.getProductId()+") added on not avaliable product");
-							isAvaliable = false;
-							break;
-						}
-					}
-					if(isAvaliable){
-						listAvaliableProduct.add(product); 
-						LOGGER.info("Product ("+product.getProductId()+") added on avaliable product");
+			List<Product> listNotAvaliableProduct = new ArrayList<>();
+			for(OrderLine orderLine : order.getListProduct()){
+				Product product = orderLine.getPk().getProduct();
+				boolean isAvaliable = false;
+				for(Product allProduct : listProduct){
+					if(product.getProductId() == allProduct.getProductId()){
+						listAvaliableProduct.add(product);
+						isAvaliable = true;
+						break;
 					}
 				}
-				model.addAttribute("listNotAvaProduct", listNotAvaliableProduct);
+				if(!isAvaliable){
+					listNotAvaliableProduct.add(product);
+				}
 			}
+			
+
 			model.addAttribute("listAvaProduct", listAvaliableProduct);
+			model.addAttribute("listNotAvaProduct", listNotAvaliableProduct);
 			return "ListProduct";
 		
 		}else{
@@ -128,5 +121,36 @@ public class ProductController {
 		return "index";
 	}
 
-	
+	@RequestMapping(value = "/addToCart/{productId}", method = RequestMethod.GET)
+	public String doAddToCart(@PathVariable("productId") int productId, HttpSession session, ModelMap model) {
+		LOGGER.info("Product id '" + productId + "' has requested to add to my cart");
+		Account account = SessionUtility.getAccount(session);
+		if (account != null) {
+			Orders orders = ordersManager.findCartByAccountId(account.getAccountId());
+			Product product = productManager.findOne(((Integer) productId).longValue());
+			OrderLine orderLine = null;
+			if (orders == null) {
+				LOGGER.info("New Cart");
+				orders = new Orders();
+				orders.setOrderStatus("cart");
+				orders.setCustomer(account);
+				orders.setDatetime(new Date());
+				ordersManager.save(orders);
+				LOGGER.info("My cart '" + orders.getOrderId() + "'");
+			}
+
+			orderLine = new OrderLine();
+			orderLine.getPk().setProduct(product);
+			orderLine.getPk().setOrders(orders);
+			orderLine.setAmount(3);
+			LOGGER.info("\tAdd Product :  '" + product.getProductName() + "'");
+			orderLineManager.save(orderLine);
+
+			model.addAttribute("orderList", orderLine);
+
+			return "redirect:../listProduct";
+		}
+		return "redirect:index.jsp";
+
+	}
 }

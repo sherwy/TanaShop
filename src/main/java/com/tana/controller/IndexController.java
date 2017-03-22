@@ -22,7 +22,6 @@ public class IndexController {
 	@GetMapping("/index")
 	public String index(Model model) {
 		LOGGER.info("Redirect to index page");
-		model.addAttribute("account",new Account());
 		return "index";
 	}
 }
