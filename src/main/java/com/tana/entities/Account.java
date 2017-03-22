@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 public class Account implements java.io.Serializable {
 	private long accountId;
 	private String username;
+	private String imgUrl;
 	private String password;
 	private String firstName;
 	private String lastName;
@@ -24,7 +25,7 @@ public class Account implements java.io.Serializable {
 	public Account(){}
 	
 	public Account(long accountId, String username, String password, String firstName, String lastName, String gender,
-			String birthDate, String telephoneNumber, List<Orders> listOrder,String role) {
+			String birthDate, String telephoneNumber, List<Orders> listOrder,String role,String imgUrl) {
 		super();
 		this.accountId = accountId;
 		this.username = username;
@@ -130,6 +131,15 @@ public class Account implements java.io.Serializable {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+	
+	@Column(name="img_url",nullable=false)
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
 	}
 	
 	

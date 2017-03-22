@@ -20,6 +20,7 @@
 					<td>Price</td>
 					<td>Product Detail</td>
 					<td>Amount</td>
+					<td>Delete</td>
 				</tr>
 				<form:hidden path="orderId" value="${order.orderId }" />
 				<c:forEach items="${order.listProduct}" var="orderLine"
@@ -34,7 +35,7 @@
 						<td><form:label
 								path="listProduct[${status.index }].pk.product.imgUrl"
 								value="${orderLine.pk.product.imgUrl}">
-								<img src="/Images/${orderLine.pk.product.imgUrl}" width="100px" height="100px" />
+								<img src="/Images/Products/${orderLine.pk.product.imgUrl}" width="100px" height="100px" />
 								<form:hidden
 									path="listProduct[${status.index }].pk.product.imgUrl"
 									value="${orderLine.pk.product.imgUrl}" />
@@ -56,6 +57,9 @@
 								value="${orderLine.pk.product.productDetail}" /></td>
 						<td><form:input path="listProduct[${status.index }].amount"
 								value="${orderLine.amount }" /></td>
+								
+						<td><a href="<c:url value='/RemoveOutOfCart/${orderLine.pk.product.productId}' />"
+								class="btn btn-danger" role="button" >Delete</a></td>
 					</tr>
 				</c:forEach>
 			</table>

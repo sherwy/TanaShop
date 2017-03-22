@@ -1,5 +1,10 @@
 package com.tana.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,9 +14,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.tana.Repositories.AccountRepository;
 import com.tana.entities.Account;
+import com.tana.utilities.UserRole;
+import com.tana.utilities.VariableUtility;
 
 @Controller
 public class RegisterController {
@@ -34,8 +43,29 @@ public class RegisterController {
 	
 
 	@RequestMapping(value = "/addRegister", method = RequestMethod.POST)
-	public String addRegister(@ModelAttribute("SpringWeb") Account account,ModelMap model) {
+	public String addRegister(@ModelAttribute("SpringWeb") Account account,@RequestParam("file")MultipartFile file,ModelMap model) {
 		LOGGER.info("Username : "+account.getUsername());
+
+		if (file.isEmpty()) {
+            LOGGER.info("File is empty");
+            return "redirect:index";
+        }
+		String fileName = null;
+        try {
+
+            // Get the file and save it somewhere
+            byte[] bytes = file.getBytes();
+            fileName = account.getUsername()+"_"+ file.getOriginalFilename();
+            LOGGER.info("File name : "+fileName);
+            Path path = Paths.get(VariableUtility.IMG_PATH_USERS + fileName);
+            Files.write(path, bytes);
+
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        account.setImgUrl(fileName);
+        account.setRole(UserRole.USER.getRole());
 		accountRepository.save(account);
 		return "index";
 	}

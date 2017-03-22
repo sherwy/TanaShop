@@ -29,9 +29,10 @@ public class AdminController {
 		Account account = SessionUtility.getAccount(session);
 
 		if (account != null) {
-
 			List<Orders> listOrder = ordersManager.findOrderByOrderStatusOnExcept(OrderStatus.ORDER_CART.getStatus());
-			model.addAttribute("listOrder",listOrder);
+			if(listOrder != null){
+				model.addAttribute("listOrder",listOrder);
+			}
 			return "ListOrder";
 		} else {
 			return "redirect:index";
