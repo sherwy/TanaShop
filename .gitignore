@@ -1,5 +1,3 @@
-target/!.mvn/wrapper/maven-wrapper.jar
-
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -27,6 +25,5 @@ nbdist/
 .nb-gradle/
 
 ###Own###
-
 src/main/webapp/Images/*
 
