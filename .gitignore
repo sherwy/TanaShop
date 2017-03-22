@@ -1,4 +1,8 @@
 
 ###Own###
+<<<<<<< HEAD
 src/main/webapp/Images/
 /target/
+=======
+src/main/webapp/Images/*
+>>>>>>> origin/master
