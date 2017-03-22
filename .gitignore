@@ -30,4 +30,7 @@ nbdist/
 src/main/webapp/Images/*
 =======
 src/main/webapp/Images/
+<<<<<<< HEAD
 >>>>>>> 2a0a628 Fixed bug
+=======
+>>>>>>> parent of 2a0a628... Fixed bug
