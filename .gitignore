@@ -25,5 +25,9 @@ nbdist/
 
 
 ###Own###
+<<<<<<< master
 <<<<<<< HEAD
 src/main/webapp/Images/*
+=======
+src/main/webapp/Images/
+>>>>>>> 2a0a628 Fixed bug
