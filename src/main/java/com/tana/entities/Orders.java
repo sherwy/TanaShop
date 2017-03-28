@@ -16,24 +16,24 @@ public class Orders implements java.io.Serializable {
 	private Account customer;
 	private List<OrderLine> listProduct;
 	private Receiver receiver;
-	private String orderStatus;
 	private Payment payment;
-
+	private String status;
+	
 	public Orders() {
 	}
 
 	public Orders(long orderId, Date datetime, Account customer, List<OrderLine> listProduct, Receiver receiver,
-			String orderStatus, Payment payment) {
+			Payment payment, String status) {
 		super();
 		this.orderId = orderId;
 		this.datetime = datetime;
 		this.customer = customer;
 		this.listProduct = listProduct;
 		this.receiver = receiver;
-		this.orderStatus = orderStatus;
 		this.payment = payment;
+		this.status = status;
 	}
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "order_id", unique = true, nullable = false)
@@ -53,15 +53,6 @@ public class Orders implements java.io.Serializable {
 
 	public void setDatetime(Date datetime) {
 		this.datetime = datetime;
-	}
-
-	@Column(name = "order_status")
-	public String getOrderStatus() {
-		return orderStatus;
-	}
-
-	public void setOrderStatus(String orderStatus) {
-		this.orderStatus = orderStatus;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -104,4 +95,12 @@ public class Orders implements java.io.Serializable {
 		this.payment = payment;
 	}
 
+	@Column(name="order_status",nullable=false)
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }

@@ -39,8 +39,6 @@ public class Account implements java.io.Serializable {
 		this.role = role;
 	}
 
-
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="account_id",unique=true,nullable=false)

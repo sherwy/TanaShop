@@ -3,16 +3,18 @@
 	<jsp:param name="title" value="Index" />
 </jsp:include>
 
+<%@ page language="java" contentType="text/html; charset=TIS-620"
+	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:choose>
 	<c:when test="${listAvaProduct!=null}">
 		<table class="table table-striped">
 			<tr>
-				<td>Product Id</td>
-				<td>Img</td>
-				<td>Product Name</td>
-				<td>Price</td>
-				<td>Product Detail</td>
+				<td>รหัสสินค้า</td>
+				<td>รูปภาพสินค้า</td>
+				<td>ชื่อสินค้า</td>
+				<td>ราคาต่อหน่วย</td>
+				<td>รายละเอียดสินค้า</td>
 				<td>#</td>
 			</tr>
 			<c:forEach items="${listAvaProduct}" var="product">
@@ -25,7 +27,7 @@
 					<td>${product.productDetail}</td>
 					<td><a
 						href="<c:url value='/addToCart/${product.productId}' />"
-						class="btn btn-success" role="button">Add to Cart</a></td>
+						class="btn btn-success" role="button">เพิ่มลงตะกร้า</a></td>
 				</tr>
 			</c:forEach>
 
@@ -41,7 +43,7 @@
 							<td>${product.productDetail}</td>
 							<td><a
 								href="<c:url value='#' />"
-								class="btn btn-danger" role="button" disabled>Already in cart</a></td>
+								class="btn btn-danger" role="button" disabled>มีสินค้าในตะกร้าแล้ว</a></td>
 						</tr>
 					</c:forEach>
 				</c:when>

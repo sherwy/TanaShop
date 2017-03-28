@@ -1,5 +1,7 @@
 package com.tana.entities;
 
+import java.util.Date;
+
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -11,22 +13,23 @@ public class Payment implements java.io.Serializable {
 	private long id;
 	private String paymentMins;
 	private String paymentHour;
-	private String accountNumber;
-	private Bank bank;
+	private Date paymentDate;
+	private String bank;
+	private String imgUrl;
 	private Orders order;
 	public Payment(){}
-	
-	
-	public Payment(long id, String paymentMins, String paymentHour, String accountNumber, Bank bank, Orders order) {
+
+	public Payment(long id, String paymentMins, String paymentHour, Date paymentDate, String bank, String imgUrl,
+			Orders order) {
 		super();
 		this.id = id;
 		this.paymentMins = paymentMins;
 		this.paymentHour = paymentHour;
-		this.accountNumber = accountNumber;
+		this.paymentDate = paymentDate;
 		this.bank = bank;
+		this.imgUrl = imgUrl;
 		this.order = order;
 	}
-
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,35 +60,42 @@ public class Payment implements java.io.Serializable {
 		this.paymentHour = paymentHour;
 	}
 
-	@Column(name="account_number",unique=true,nullable=false)
-	public String getAccountNumber() {
-		return accountNumber;
-	}
-
-	public void setAccountNumber(String accountNumber) {
-		this.accountNumber = accountNumber;
-	}
-	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="bank_id",nullable=false)
-	@JsonManagedReference
-	public Bank getBank() {
-		return bank;
-	}
-
-	public void setBank(Bank bank) {
-		this.bank = bank;
-	}
-
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "payment", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	public Orders getOrder() {
 		return order;
 	}
 
-
 	public void setOrder(Orders order) {
 		this.order = order;
+	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "payment_date", nullable = false)
+	public Date getPaymentDate() {
+		return paymentDate;
+	}
+	
+	public void setPaymentDate(Date paymentDate) {
+		this.paymentDate = paymentDate;
+	}
+
+	@Column(name="payment_img" , nullable = false)
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
+	
+	@Column(name="payment_bank" , nullable=false)
+	public String getBank() {
+		return bank;
+	}
+
+	public void setBank(String bank) {
+		this.bank = bank;
 	}
 	
 	

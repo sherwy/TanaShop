@@ -1,9 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=TIS-620"
+	pageEncoding="TIS-620"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=TIS-620">
 <link href="/Tools/css/bootstrap.css" rel="stylesheet">
 <script src="/Tools/js/bootstrap.js"></script>
 <title>Tana Shop :: ${param.title }</title>
@@ -30,8 +30,11 @@
 				%>
 				<a href="/addProduct" class="btn btn-success" role="button">Add
 					Product</a> <a href="listAllOrder" class="btn btn-success"
-					role="button">Show Orders</a>
-
+					role="button">Show Orders</a> 
+					<a href="/listAdminProduct" class="btn btn-success"
+					role="button">Manage Product</a>
+					<a href="/addCategory" class="btn btn-success"
+					role="button">Add Cateogry</a>
 				<%
 					} else {
 				%>

@@ -1,6 +1,7 @@
 package com.tana.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -19,9 +20,10 @@ import com.tana.Repositories.ProductRepository;
 import com.tana.entities.Account;
 import com.tana.entities.OrderLine;
 import com.tana.entities.Orders;
+import com.tana.entities.Payment;
 import com.tana.entities.Product;
-import com.tana.utilities.OrderStatus;
 import com.tana.utilities.SessionUtility;
+import com.tana.utilities.OrderStatusUtilities;
 
 @Controller
 public class CartController {
@@ -49,6 +51,8 @@ public class CartController {
 			if (order != null) {
 				model.addAttribute("order", order); 
 				model.addAttribute("orderId", order.getOrderId());
+				List<Orders> confirmOrder = ordersManager.findOrderByOrderStatus(OrderStatusUtilities.PENDING_PAYMENT.getStatus());
+				model.addAttribute("haveConfirmOrder",(confirmOrder != null && confirmOrder.size() > 0));
 			}
 			model.addAttribute("orderList", new Orders());
 			return "MyCart";
@@ -71,14 +75,28 @@ public class CartController {
 
 				orderLineManager.updateAmountByOrderIdAndProductId(amount, orderId, productId);
 				LOGGER.info("Order " + orderId + " : Update amount to " + amount + " on product id " + productId);
-
-				String statusString = OrderStatus.ORDER_PENDING_PAYMENT.getStatus();
-				ordersManager.updateOrderStatusByOrderId(orderId, statusString);
-				LOGGER.info("Order ID : " + orderId + " to " + statusString);
+				
+				String status = OrderStatusUtilities.PENDING_PAYMENT.getStatus();
+				ordersManager.updateOrderStatusByOrderId(orderId, status);
+				LOGGER.info("Order ID : " + orderId + " to " + status);
 			}
 		}
-		return "redirect:index";
+		return "ConfirmPayment";
 
+	}
+	
+	@RequestMapping(value = "/confirmCart", method = RequestMethod.GET)
+	public String confirmCart(@PathVariable("orderId") long orderId,HttpSession session, ModelMap model) {
+		
+
+		Account account = SessionUtility.getAccount(session);
+
+		if (account != null) {
+			model.addAttribute("payment",new Payment());
+			model.addAttribute("orderId",orderId);
+			return "ConfirmPayment";
+		}
+		return "redirect:index";
 	}
 	
 	@RequestMapping(value = "/RemoveOutOfCart/{productId}", method = RequestMethod.GET)
@@ -104,7 +122,7 @@ public class CartController {
 			if (orders == null) {
 				LOGGER.info("New Cart");
 				orders = new Orders();
-				orders.setOrderStatus("cart");
+				orders.setStatus(OrderStatusUtilities.CART.getStatus());
 				orders.setCustomer(account);
 				orders.setDatetime(new Date());
 				ordersManager.save(orders);

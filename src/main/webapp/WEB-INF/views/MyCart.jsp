@@ -2,9 +2,12 @@
 <jsp:include page="../componant/header.jsp" flush="true">
 	<jsp:param name="title" value="Index" />
 </jsp:include>
+<%@ page language="java" contentType="text/html; charset=TIS-620"
+	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<b>My Cart</b><br/>
+<b>ตะกร้าสินค้า</b>
+<br />
 <c:choose>
 	<c:when test="${order!=null}">
 
@@ -14,13 +17,13 @@
 
 			<table class="table table-striped">
 				<tr>
-					<td>Product Id</td>
-					<td>Img</td>
-					<td>Product Name</td>
-					<td>Price</td>
-					<td>Product Detail</td>
-					<td>Amount</td>
-					<td>Delete</td>
+					<td>รหัสสินค้า</td>
+					<td>รูปภาพ</td>
+					<td>ชื่อสินค้า</td>
+					<td>ราคา</td>
+					<td>รายละเอียด</td>
+					<td>ราคาต่อหน่วย</td>
+					<td></td>
 				</tr>
 				<form:hidden path="orderId" value="${order.orderId }" />
 				<c:forEach items="${order.listProduct}" var="orderLine"
@@ -35,7 +38,8 @@
 						<td><form:label
 								path="listProduct[${status.index }].pk.product.imgUrl"
 								value="${orderLine.pk.product.imgUrl}">
-								<img src="/Images/Products/${orderLine.pk.product.imgUrl}" width="100px" height="100px" />
+								<img src="/Images/Products/${orderLine.pk.product.imgUrl}"
+									width="100px" height="100px" />
 								<form:hidden
 									path="listProduct[${status.index }].pk.product.imgUrl"
 									value="${orderLine.pk.product.imgUrl}" />
@@ -57,18 +61,32 @@
 								value="${orderLine.pk.product.productDetail}" /></td>
 						<td><form:input path="listProduct[${status.index }].amount"
 								value="${orderLine.amount }" /></td>
-								
-						<td><a href="<c:url value='/RemoveOutOfCart/${orderLine.pk.product.productId}' />"
-								class="btn btn-danger" role="button" >Delete</a></td>
+
+						<td><a
+							href="<c:url value='/RemoveOutOfCart/${orderLine.pk.product.productId}' />"
+							class="btn btn-danger" role="button">Delete</a></td>
 					</tr>
 				</c:forEach>
+				<tr>
+					<td colspan="7"><input type="submit"
+						<c:choose>
+				<c:when test="${haveConfirmOrder == true }">
+					 class="btn btn-danger" value="มีรายการค้างชำระเงินอยู่" disabled
+				</c:when>
+				<c:otherwise>
+					class="btn btn-primary" value="ยืนยันตะกร้า"
+				</c:otherwise>
+			</c:choose> />
+			<a href="<c:url value='/confirmCart' />"
+							class="btn btn-primary" role="button">ไปยังรายการแจ้งชำระเงิน</a>
+			</td>
+				</tr>
 			</table>
 
-			<input class="btn btn-primary" type="submit" value="Submit" />
 		</form:form>
 	</c:when>
 	<c:otherwise>
-No product.
+ไม่มีสินค้าในตะกร้า
 </c:otherwise>
 </c:choose>
 <jsp:include page="../componant/footer.jsp" flush="true" />

@@ -15,12 +15,13 @@ public class Product implements java.io.Serializable {
 	private double price;
 	private String productDetail;
 	private List<OrderLine> listOrder;
-	
+	private OrderCategory category;
+	private String status;
 	
 	public Product(){}
-
+	
 	public Product(long productId, String productName, String imgUrl, double price, String productDetail,
-			List<OrderLine> listOrder) {
+			List<OrderLine> listOrder, OrderCategory category, String status) {
 		super();
 		this.productId = productId;
 		this.productName = productName;
@@ -28,6 +29,8 @@ public class Product implements java.io.Serializable {
 		this.price = price;
 		this.productDetail = productDetail;
 		this.listOrder = listOrder;
+		this.category = category;
+		this.status = status;
 	}
 
 	@Id
@@ -84,6 +87,27 @@ public class Product implements java.io.Serializable {
 
 	public void setListOrder(List<OrderLine> listOrder) {
 		this.listOrder = listOrder;
+	}
+
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="category_id",nullable=false)
+	@JsonManagedReference
+	public OrderCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(OrderCategory category) {
+		this.category = category;
+	}
+	
+	@Column(name="status" , nullable=false)
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 	
