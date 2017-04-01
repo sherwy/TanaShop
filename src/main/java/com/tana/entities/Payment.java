@@ -42,7 +42,7 @@ public class Payment implements java.io.Serializable {
 		this.id = id;
 	}
 	
-	@Column(name="payment_mins",unique=true,nullable=false)
+	@Column(name="payment_mins",nullable=false)
 	public String getPaymentMins() {
 		return paymentMins;
 	}
@@ -51,7 +51,7 @@ public class Payment implements java.io.Serializable {
 		this.paymentMins = paymentMins;
 	}
 	
-	@Column(name="payment_hour",unique=true,nullable=false)
+	@Column(name="payment_hour",nullable=false)
 	public String getPaymentHour() {
 		return paymentHour;
 	}

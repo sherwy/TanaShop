@@ -15,6 +15,7 @@
 				<td>สถานะ</td>
 				<td>วันที่ออกรายการ</td>
 				<td>ชื่อลูกค้า</td>
+				<td>#</td>
 			</tr>
 			<c:forEach items="${listOrder}" var="order" varStatus="i">
 				<c:choose>
@@ -26,6 +27,7 @@
 								${order.status}</td>
 							<td>${order.datetime}</td>
 							<td>${order.customer.firstName } ${order.customer.lastName }</td>
+							<td></td>
 						</tr>
 					</c:when>
 					<c:when test="${order.status == 'รอการตรวจสอบ'}">
@@ -36,6 +38,9 @@
 								${order.status}</td>
 							<td>${order.datetime}</td>
 							<td>${order.customer.firstName } ${order.customer.lastName }</td>
+							<td>
+								<a href="<c:url value='/verifyOrder/${order.orderId }' />" disabled class="btn btn-danger" role="button">ยืนยันการชำระเงิน</a>
+							</td>
 						</tr>
 					</c:when>
 					<c:when test="${order.status == 'รอการจัดส่ง'}">
@@ -46,6 +51,7 @@
 								${order.status}</td>
 							<td>${order.datetime}</td>
 							<td>${order.customer.firstName } ${order.customer.lastName }</td>
+							<td><a href="<c:url value='/deliveryOrder/${order.orderId }' />" disabled class="btn btn-primary" role="button">แจ้งส่งสินค้า</a></td>
 						</tr>
 					</c:when>
 				</c:choose>

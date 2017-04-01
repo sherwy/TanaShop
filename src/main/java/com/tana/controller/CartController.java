@@ -30,10 +30,9 @@ public class CartController {
 
 	private Logger LOGGER = Logger.getLogger(CartController.class);
 
-	
 	@Autowired
 	private ProductRepository productManager;
-	
+
 	@Autowired
 	private OrdersRepository ordersManager;
 
@@ -49,10 +48,10 @@ public class CartController {
 
 			Orders order = ordersManager.findCartByAccountId(account.getAccountId());
 			if (order != null) {
-				model.addAttribute("order", order); 
+				model.addAttribute("order", order);
 				model.addAttribute("orderId", order.getOrderId());
-				List<Orders> confirmOrder = ordersManager.findOrderByOrderStatus(OrderStatusUtilities.PENDING_PAYMENT.getStatus());
-				model.addAttribute("haveConfirmOrder",(confirmOrder != null && confirmOrder.size() > 0));
+				Orders confirmOrder = ordersManager.findByStatusAndAccountId(OrderStatusUtilities.PENDING_PAYMENT.getStatus(),account.getAccountId());
+				model.addAttribute("haveConfirmOrder", (confirmOrder != null));
 			}
 			model.addAttribute("orderList", new Orders());
 			return "MyCart";
@@ -69,36 +68,24 @@ public class CartController {
 		Account account = SessionUtility.getAccount(session);
 
 		if (account != null) {
-			for (OrderLine orderLine : orders.getListProduct()) { 
+			for (OrderLine orderLine : orders.getListProduct()) {
 				int amount = orderLine.getAmount();
 				long productId = orderLine.getPk().getProduct().getProductId();
-
+				
 				orderLineManager.updateAmountByOrderIdAndProductId(amount, orderId, productId);
 				LOGGER.info("Order " + orderId + " : Update amount to " + amount + " on product id " + productId);
-				
-				String status = OrderStatusUtilities.PENDING_PAYMENT.getStatus();
-				ordersManager.updateOrderStatusByOrderId(orderId, status);
-				LOGGER.info("Order ID : " + orderId + " to " + status);
 			}
-		}
-		return "ConfirmPayment";
-
-	}
-	
-	@RequestMapping(value = "/confirmCart", method = RequestMethod.GET)
-	public String confirmCart(@PathVariable("orderId") long orderId,HttpSession session, ModelMap model) {
-		
-
-		Account account = SessionUtility.getAccount(session);
-
-		if (account != null) {
+			String status = OrderStatusUtilities.PENDING_PAYMENT.getStatus();
+			ordersManager.updateOrderStatusByOrderId(orderId, status);
+			LOGGER.info("Order ID {" + orderId + "} to " + status);
 			model.addAttribute("payment",new Payment());
-			model.addAttribute("orderId",orderId);
 			return "ConfirmPayment";
 		}
 		return "redirect:index";
 	}
-	
+
+
+
 	@RequestMapping(value = "/RemoveOutOfCart/{productId}", method = RequestMethod.GET)
 	public String doRemoveOutOfCart(@PathVariable("productId") int productId, HttpSession session, ModelMap model) {
 		LOGGER.info("Product id '" + productId + "' has requested to add to my cart");
@@ -110,7 +97,7 @@ public class CartController {
 		}
 		return "redirect:../index";
 	}
-	
+
 	@RequestMapping(value = "/addToCart/{productId}", method = RequestMethod.GET)
 	public String doAddToCart(@PathVariable("productId") int productId, HttpSession session, ModelMap model) {
 		LOGGER.info("Product id '" + productId + "' has requested to add to my cart");

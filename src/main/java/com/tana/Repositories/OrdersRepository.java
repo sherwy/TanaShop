@@ -14,6 +14,10 @@ import com.tana.entities.Account;
 import com.tana.entities.Orders;
 
 public interface OrdersRepository extends JpaRepository<Orders,Long>{
+	
+	@Query(value="SELECT * FROM orders o inner join account a on o.account_id = a.account_id WHERE o.order_status = ?1 and o.account_id = ?2",nativeQuery=true)
+	Orders findByStatusAndAccountId(String orderStatus,long accountId);
+	
 	Orders findByStatus(String orderStatus);
 	
 	@Query(value = "SELECT * FROM orders o inner join account a on o.account_id = a.account_id WHERE o.order_status = 'ตะกร้า' and o.account_id = ?1",nativeQuery=true)
@@ -24,7 +28,6 @@ public interface OrdersRepository extends JpaRepository<Orders,Long>{
 	
 	@Query(value = "SELECT * FROM orders o inner join account a on o.account_id = a.account_id WHERE o.order_status != ?1",nativeQuery=true)
 	List<Orders> findOrderByOrderStatusOnExcept(String orderStauts);
-	
 	
 	Orders findByStatusAndCustomer(String orderStatus,Account customer);
 	

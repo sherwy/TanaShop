@@ -68,17 +68,18 @@
 					</tr>
 				</c:forEach>
 				<tr>
-					<td colspan="7"><input type="submit"
+					<td colspan="7">
 						<c:choose>
 				<c:when test="${haveConfirmOrder == true }">
-					 class="btn btn-danger" value="มีรายการค้างชำระเงินอยู่" disabled
+					 <a href="<c:url value='#' />" class="btn btn-danger" disabled role="button">มีรายการค้างชำระเงินอยู่</a>
+					 
+					 <a href="<c:url value='/confirmPayment' />" class="btn btn-primary" role="button">ไปยังรายการแจ้งชำระเงิน</a>
 				</c:when>
 				<c:otherwise>
-					class="btn btn-primary" value="ยืนยันตะกร้า"
+					<input  type="submit" class="btn btn-primary" value="ยืนยันตะกร้า" />
 				</c:otherwise>
-			</c:choose> />
-			<a href="<c:url value='/confirmCart' />"
-							class="btn btn-primary" role="button">ไปยังรายการแจ้งชำระเงิน</a>
+			</c:choose> 
+	 
 			</td>
 				</tr>
 			</table>
