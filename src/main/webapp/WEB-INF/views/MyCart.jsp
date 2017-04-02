@@ -8,6 +8,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <b>ตะกร้าสินค้า</b>
 <br />
+
 <c:choose>
 	<c:when test="${order!=null}">
 
@@ -22,7 +23,7 @@
 					<td>ชื่อสินค้า</td>
 					<td>ราคา</td>
 					<td>รายละเอียด</td>
-					<td>ราคาต่อหน่วย</td>
+					<td>จำนวน</td>
 					<td></td>
 				</tr>
 				<form:hidden path="orderId" value="${order.orderId }" />
@@ -59,35 +60,67 @@
 							<form:hidden
 								path="listProduct[${status.index }].pk.product.productDetail"
 								value="${orderLine.pk.product.productDetail}" /></td>
-						<td><form:input path="listProduct[${status.index }].amount"
-								value="${orderLine.amount }" /></td>
-
+						<td>
+							<div class="row">
+								<div class="col-md-8">
+										${orderLine.pk.product.price} x
+								</div>
+								<div class="col-md-4">
+									<form:input type="number" path="listProduct[${status.index }].amount"
+										 min="1" max="${ orderLine.pk.product.amount}" value="1"  class="form-control"/>
+								</div>
+							</div>
+						</td>
 						<td><a
 							href="<c:url value='/RemoveOutOfCart/${orderLine.pk.product.productId}' />"
 							class="btn btn-danger" role="button">Delete</a></td>
 					</tr>
 				</c:forEach>
 				<tr>
-					<td colspan="7">
-						<c:choose>
-				<c:when test="${haveConfirmOrder == true }">
-					 <a href="<c:url value='#' />" class="btn btn-danger" disabled role="button">มีรายการค้างชำระเงินอยู่</a>
-					 
-					 <a href="<c:url value='/confirmPayment' />" class="btn btn-primary" role="button">ไปยังรายการแจ้งชำระเงิน</a>
-				</c:when>
-				<c:otherwise>
-					<input  type="submit" class="btn btn-primary" value="ยืนยันตะกร้า" />
-				</c:otherwise>
-			</c:choose> 
-	 
-			</td>
+					<td colspan="5">
+						ราคารวม
+					</td>
+					<td><input type="text" disabled id="testAmount" value="0"/></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td colspan="7"><c:choose>
+							<c:when test="${haveConfirmOrder == true }">
+								<a href="<c:url value='#' />" class="btn btn-danger" disabled
+									role="button">มีรายการค้างชำระเงินอยู่</a>
+
+								<a href="<c:url value='/confirmPayment' />"
+									class="btn btn-primary" role="button">ไปยังรายการแจ้งชำระเงิน</a>
+							</c:when>
+							<c:otherwise>
+								<input type="submit" class="btn btn-primary"
+									value="ยืนยันตะกร้า" />
+							</c:otherwise>
+						</c:choose></td>
 				</tr>
 			</table>
-
+			
 		</form:form>
 	</c:when>
 	<c:otherwise>
 ไม่มีสินค้าในตะกร้า
 </c:otherwise>
 </c:choose>
+<script>
+$(document).ready(function(){
+	$('input').change(function(){
+		var totalAmount = 0;
+		
+		<c:forEach items="${order.listProduct}" var="orderLine" varStatus="status">
+			var amount${status.index} = $('input#listProduct${status.index}\\.amount').val();
+			var total${status.index} = (parseInt(${orderLine.pk.product.price}) *  parseInt(amount${status.index}));
+			totalAmount += parseInt(total${status.index});
+		</c:forEach>
+		
+		$('input#testAmount').val(totalAmount);
+	});
+});
+
+
+</script>
 <jsp:include page="../componant/footer.jsp" flush="true" />

@@ -34,6 +34,8 @@ public interface OrdersRepository extends JpaRepository<Orders,Long>{
 	@EntityGraph(attributePaths = { "customer" })
 	Orders findByOrderIdNotNull(long orderId); 
 	
+	Orders findByOrderId(long orderId);
+	
 	@Transactional
 	@Modifying
 	@Query(value = "UPDATE orders SET order_status = ?2 WHERE order_id = ?1",nativeQuery = true)

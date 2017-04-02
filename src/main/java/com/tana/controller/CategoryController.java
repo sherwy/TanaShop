@@ -6,13 +6,13 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.hsqldb.types.Charset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.tana.Repositories.CategoryRepository;
 import com.tana.entities.Account;
@@ -40,11 +40,13 @@ public class CategoryController {
 	}
 
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
-	public String doAddCategory(@ModelAttribute OrderCategory category, HttpSession session, Model model) {
+	public String doAddCategory(@ModelAttribute OrderCategory category,@RequestParam("categoryDetail") String categoryDetail, HttpSession session, Model model) {
 		
 		Account account = SessionUtility.getAccount(session);
 		LOGGER.info("Category : "+category.getCategoryName());
 		if (account != null) {
+			LOGGER.info("Detail : "+categoryDetail);
+			category.setCategoryDetail(categoryDetail);
 			categoryManager.save(category);
 		}
 		return "redirect:index";

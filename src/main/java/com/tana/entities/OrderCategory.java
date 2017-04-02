@@ -21,18 +21,22 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 public class OrderCategory {
 	private long categoryId;
 	private String categoryName;
+	private String categoryDetail;
 	private List<Product> listProduct;
 	private List<OrderCategory> listChildCategory;
 	private OrderCategory parentCategory;
 	
 	public OrderCategory(){}
-	
-	public OrderCategory(long categoryId, String categoryName, List<Product> listProduct, List<OrderCategory> listChildCategory) {
+
+	public OrderCategory(long categoryId, String categoryName, String categoryDetail, List<Product> listProduct,
+			List<OrderCategory> listChildCategory, OrderCategory parentCategory) {
 		super();
 		this.categoryId = categoryId;
 		this.categoryName = categoryName;
+		this.categoryDetail = categoryDetail;
 		this.listProduct = listProduct;
 		this.listChildCategory = listChildCategory;
+		this.parentCategory = parentCategory;
 	}
 
 	@Id
@@ -84,6 +88,15 @@ public class OrderCategory {
 
 	public void setParentCategory(OrderCategory parentCategory) {
 		this.parentCategory = parentCategory;
+	}
+
+	@Column(name="category_detail",nullable=true)
+	public String getCategoryDetail() {
+		return categoryDetail;
+	}
+
+	public void setCategoryDetail(String categoryDetail) {
+		this.categoryDetail = categoryDetail;
 	}
 	
 	

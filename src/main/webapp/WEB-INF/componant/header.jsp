@@ -5,7 +5,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=TIS-620">
 <link href="/Tools/css/bootstrap.css" rel="stylesheet">
-<script src="/Tools/js/bootstrap.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+
 <title>Tana Shop :: ${param.title }</title>
 </head>
 <body>

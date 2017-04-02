@@ -17,11 +17,13 @@ public class Product implements java.io.Serializable {
 	private List<OrderLine> listOrder;
 	private OrderCategory category;
 	private String status;
+	private int amount;
 	
 	public Product(){}
 	
+
 	public Product(long productId, String productName, String imgUrl, double price, String productDetail,
-			List<OrderLine> listOrder, OrderCategory category, String status) {
+			List<OrderLine> listOrder, OrderCategory category, String status, int amount) {
 		super();
 		this.productId = productId;
 		this.productName = productName;
@@ -31,7 +33,9 @@ public class Product implements java.io.Serializable {
 		this.listOrder = listOrder;
 		this.category = category;
 		this.status = status;
+		this.amount = amount;
 	}
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -108,6 +112,16 @@ public class Product implements java.io.Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	@Column(name="amount" , nullable=false)
+	public int getAmount() {
+		return amount;
+	}
+
+
+	public void setAmount(int amount) {
+		this.amount = amount;
 	}
 	
 	

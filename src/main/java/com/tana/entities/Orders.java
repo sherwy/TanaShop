@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.*;
 
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @SuppressWarnings("serial")
@@ -15,23 +16,23 @@ public class Orders implements java.io.Serializable {
 	private Date datetime;
 	private Account customer;
 	private List<OrderLine> listProduct;
-	private Receiver receiver;
 	private Payment payment;
 	private String status;
+	private Delivery delivery;
 	
 	public Orders() {
 	}
-
-	public Orders(long orderId, Date datetime, Account customer, List<OrderLine> listProduct, Receiver receiver,
-			Payment payment, String status) {
+	
+	public Orders( long orderId, Date datetime, Account customer, List<OrderLine> listProduct,
+			Payment payment, String status, Delivery delivery) {
 		super();
 		this.orderId = orderId;
 		this.datetime = datetime;
 		this.customer = customer;
 		this.listProduct = listProduct;
-		this.receiver = receiver;
 		this.payment = payment;
 		this.status = status;
+		this.delivery = delivery;
 	}
 	
 	@Id
@@ -75,16 +76,6 @@ public class Orders implements java.io.Serializable {
 		this.listProduct = listProduct;
 	}
 
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JsonBackReference
-	public Receiver getReceiver() {
-		return receiver;
-	}
-
-	public void setReceiver(Receiver receiver) {
-		this.receiver = receiver;
-	}
-
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonBackReference
 	public Payment getPayment() {
@@ -103,4 +94,16 @@ public class Orders implements java.io.Serializable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JsonBackReference
+	public Delivery getDelivery() {
+		return delivery;
+	}
+
+	public void setDelivery(Delivery delivery) {
+		this.delivery = delivery;
+	}
+	
+	
 }
