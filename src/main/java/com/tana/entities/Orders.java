@@ -19,12 +19,13 @@ public class Orders implements java.io.Serializable {
 	private Payment payment;
 	private String status;
 	private Delivery delivery;
+	private int otherAmount;
 	
 	public Orders() {
 	}
-	
-	public Orders( long orderId, Date datetime, Account customer, List<OrderLine> listProduct,
-			Payment payment, String status, Delivery delivery) {
+
+	public Orders(long orderId, Date datetime, Account customer, List<OrderLine> listProduct, Payment payment,
+			String status, Delivery delivery, int otherAmount) {
 		super();
 		this.orderId = orderId;
 		this.datetime = datetime;
@@ -33,8 +34,9 @@ public class Orders implements java.io.Serializable {
 		this.payment = payment;
 		this.status = status;
 		this.delivery = delivery;
+		this.otherAmount = otherAmount;
 	}
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "order_id", unique = true, nullable = false)
@@ -104,6 +106,16 @@ public class Orders implements java.io.Serializable {
 	public void setDelivery(Delivery delivery) {
 		this.delivery = delivery;
 	}
+
+	@Column(name = "other_amount", nullable = true)
+	public int getOtherAmount() {
+		return otherAmount;
+	}
+
+	public void setOtherAmount(int otherAmount) {
+		this.otherAmount = otherAmount;
+	}
 	
 	
+
 }

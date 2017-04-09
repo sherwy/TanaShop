@@ -32,7 +32,7 @@
 			<tr>
 				<td><form:label path="imgUrl">รูปภาพสินค้า</form:label></td>
 				<td><input name="file" type="file" class="form-control"
-					value="/Images/Products/${product.imgUrl}" /> <form:hidden
+					value="/Images/Products/${product.imgUrl}" multiple/> <form:hidden
 						path="imgUrl" value="" /></td>
 			</tr>
 

@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.tana.Repositories.AccountRepository;
 import com.tana.entities.Account;
+import com.tana.utilities.FolderUtilities;
 import com.tana.utilities.UserRole;
 import com.tana.utilities.VariableUtility;
 
@@ -50,23 +51,24 @@ public class RegisterController {
             LOGGER.info("File is empty");
             return "redirect:index";
         }
+		
+        account.setRole(UserRole.USER.getRole());
+		Account accountReturned = accountRepository.save(account);
+		
 		String fileName = null;
         try {
-
+        	String filePath = VariableUtility.getUserPathFile(accountReturned.getUsername());
+        	FolderUtilities.createFolderIfNotExist(filePath);
             // Get the file and save it somewhere
             byte[] bytes = file.getBytes();
             fileName = account.getUsername()+"_"+ file.getOriginalFilename();
             LOGGER.info("File name : "+fileName);
-            Path path = Paths.get(VariableUtility.IMG_PATH_USERS + fileName);
+            Path path = Paths.get(filePath+ fileName);
             Files.write(path, bytes);
-
-            
         } catch (IOException e) {
             e.printStackTrace();
         }
         account.setImgUrl(fileName);
-        account.setRole(UserRole.USER.getRole());
-		accountRepository.save(account);
 		return "index";
 	}
 }

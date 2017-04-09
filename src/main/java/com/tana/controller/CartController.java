@@ -1,7 +1,6 @@
 package com.tana.controller;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -39,6 +38,11 @@ public class CartController {
 	@Autowired
 	private OrderLineRepository orderLineManager;
 
+	@ModelAttribute("account")
+	public Account getAccount(){
+		return new Account();
+	}
+	
 	@RequestMapping(value = "/myCart")
 	public String goToMyCart(HttpSession session, ModelMap model) {
 
@@ -74,6 +78,10 @@ public class CartController {
 				
 				orderLineManager.updateAmountByOrderIdAndProductId(amount, orderId, productId);
 				LOGGER.info("Order " + orderId + " : Update amount to " + amount + " on product id " + productId);
+				
+				Product product = productManager.findProductByProductId(productId);
+				product.setAmount(product.getAmount() - amount);
+				productManager.save(product);
 			}
 			String status = OrderStatusUtilities.PENDING_PAYMENT.getStatus();
 			ordersManager.updateOrderStatusByOrderId(orderId, status);

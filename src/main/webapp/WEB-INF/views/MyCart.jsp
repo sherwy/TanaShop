@@ -6,6 +6,7 @@
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <b>ตะกร้าสินค้า</b>
 <br />
 
@@ -21,7 +22,7 @@
 					<td>รหัสสินค้า</td>
 					<td>รูปภาพ</td>
 					<td>ชื่อสินค้า</td>
-					<td>ราคา</td>
+					<td>ราคาต่อหน่วย</td>
 					<td>รายละเอียด</td>
 					<td>จำนวน</td>
 					<td></td>
@@ -39,8 +40,14 @@
 						<td><form:label
 								path="listProduct[${status.index }].pk.product.imgUrl"
 								value="${orderLine.pk.product.imgUrl}">
-								<img src="/Images/Products/${orderLine.pk.product.imgUrl}"
-									width="100px" height="100px" />
+
+								<c:set var="imgSplit" value="${fn:split(orderLine.pk.product.imgUrl,',')}" />
+								<c:forEach items="${imgSplit }" var="img">
+									<img
+										src="/Images/Products/${orderLine.pk.product.productId }_${orderLine.pk.product.productName}/${img}"
+										width="100px" height="100px" />
+
+								</c:forEach>
 								<form:hidden
 									path="listProduct[${status.index }].pk.product.imgUrl"
 									value="${orderLine.pk.product.imgUrl}" />
@@ -60,27 +67,19 @@
 							<form:hidden
 								path="listProduct[${status.index }].pk.product.productDetail"
 								value="${orderLine.pk.product.productDetail}" /></td>
-						<td>
-							<div class="row">
-								<div class="col-md-8">
-										${orderLine.pk.product.price} x
-								</div>
-								<div class="col-md-4">
-									<form:input type="number" path="listProduct[${status.index }].amount"
-										 min="1" max="${ orderLine.pk.product.amount}" value="1"  class="form-control"/>
-								</div>
-							</div>
-						</td>
+						<td><form:input type="number"
+								path="listProduct[${status.index }].amount" min="1"
+								max="${ orderLine.pk.product.amount}" value="1"
+								class="form-control" /></td>
 						<td><a
 							href="<c:url value='/RemoveOutOfCart/${orderLine.pk.product.productId}' />"
 							class="btn btn-danger" role="button">Delete</a></td>
 					</tr>
 				</c:forEach>
 				<tr>
-					<td colspan="5">
-						ราคารวม
-					</td>
-					<td><input type="text" disabled id="testAmount" value="0"/></td>
+					<td colspan="5">ราคารวม</td>
+					<td><input type="text" disabled id="testAmount"
+						class="form-control" value="0" /></td>
 					<td></td>
 				</tr>
 				<tr>
@@ -100,6 +99,30 @@
 				</tr>
 			</table>
 			
+			เลือกวิธีการจัดส่งสินค้า
+			<table class="table table-striped">
+				<tr>
+					<td></td>
+					<td>รูปแบบการัจดส่ง</td>
+					<td>ราคา</td>
+					<td>ระยะเวลา</td>
+					<td>รวม</td>
+				</tr>
+				<tr>
+					<td><form:radiobutton path="otherAmount" value="50" /></td>
+					<td>ส่งแบบด่วนพิเศษ</td>
+					<td>50</td>
+					<td>ระยะเวลา 1-3 วัน</td>
+					<td><span id="ems_price"></span></td>
+				</tr>
+				<tr>
+					<td><form:radiobutton path="otherAmount" value="30" /></td>
+					<td>ส่งแบบพัสดุธรรมดา</td>
+					<td>30</td>
+					<td>ระยะเวลา 3-7 วัน</td>
+					<td><span id="register_price"></span></td>
+				</tr>
+			</table>
 		</form:form>
 	</c:when>
 	<c:otherwise>
@@ -116,7 +139,8 @@ $(document).ready(function(){
 			var total${status.index} = (parseInt(${orderLine.pk.product.price}) *  parseInt(amount${status.index}));
 			totalAmount += parseInt(total${status.index});
 		</c:forEach>
-		
+		$('span#ems_price').text((totalAmount+parseInt(50)));
+		$('span#register_price').text((totalAmount+parseInt(30)));
 		$('input#testAmount').val(totalAmount);
 	});
 });

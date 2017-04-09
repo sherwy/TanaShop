@@ -6,6 +6,7 @@
 <%@ page language="java" contentType="text/html; charset=TIS-620"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:choose>
 	<c:when test="${listAvaProduct!=null}">
 		<table class="table table-striped">
@@ -20,8 +21,14 @@
 			<c:forEach items="${listAvaProduct}" var="product">
 				<tr>
 					<td>${product.productId }</td>
-					<td><img src="/Images/Products/${product.imgUrl}" width="100px"
-						height="100px" /></td>
+					<td><c:set var="imgSplit"
+							value="${fn:split(product.imgUrl,',')}" /> <c:forEach
+							items="${imgSplit }" var="img">
+							<img
+								src="/Images/Products/${product.productId }_${product.productName}/${img}"
+								width="100px" height="100px" />
+
+						</c:forEach></td>
 					<td>${product.productName}</td>
 					<td>${product.price}</td>
 					<td>${product.productDetail}</td>
@@ -36,14 +43,21 @@
 					<c:forEach items="${listNotAvaProduct}" var="product">
 						<tr>
 							<td>${product.productId }</td>
-							<td><img src="/Images/Products/${product.imgUrl}" width="100px"
-								height="100px" /></td>
+							<td>
+							<c:set var="imgSplit"
+							value="${fn:split(product.imgUrl,',')}" />
+							<c:forEach
+							items="${imgSplit }" var="img">
+							<img
+								src="/Images/Products/${product.productId }_${product.productName}/${img}"
+								width="100px" height="100px" />
+
+						</c:forEach></td>
 							<td>${product.productName}</td>
 							<td>${product.price}</td>
 							<td>${product.productDetail}</td>
-							<td><a
-								href="<c:url value='#' />"
-								class="btn btn-danger" role="button" disabled>มีสินค้าในตะกร้าแล้ว</a></td>
+							<td><a href="<c:url value='#' />" class="btn btn-danger"
+								role="button" disabled>มีสินค้าในตะกร้าแล้ว</a></td>
 						</tr>
 					</c:forEach>
 				</c:when>
