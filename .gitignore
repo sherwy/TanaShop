@@ -25,5 +25,7 @@ nbdist/
 .nb-gradle/
 
 ###Own###
-src/main/webapp/Images
+src/main/webapp/Images/Payment
+src/main/webapp/Images/Products
+src/main/webapp/Images/Users
 
