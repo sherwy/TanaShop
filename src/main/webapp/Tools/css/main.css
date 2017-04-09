@@ -90,15 +90,15 @@ table.tableLogin {
 	z-index: 1;
 }
 
-table.tableLogin a.buttonFooter{
+a.buttonFooter{
 	width:100%;
 }
 
-table.tableLogin input.buttonFooter{
+input.buttonFooter{
 	width:100%;
 }
 
-table.tableLogin div.footerLogin{
+div.footerLogin{
 	padding-top:10px;
 }
 
@@ -110,6 +110,7 @@ span.span-img-howto{
 	display: block;
 	transition: 0.5s ease;
 }
+
 
 @font-face {
 	font-family: defaultFont;

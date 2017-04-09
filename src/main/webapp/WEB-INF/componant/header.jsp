@@ -13,6 +13,20 @@
 <title>Tana Shop :: ${param.title }</title>
 </head>
 <body>
+	<script language="JavaScript">
+		function validateLogin(frm) {
+			if (frm.username.value == "") {
+				alert("กรุณากรอกชื่อผู้ใช้");
+				return false;
+			}
+
+			if (frm.password.value == "") {
+				alert("กรุณากรอกรหัสผ่าน");
+				return false;
+			}
+		}
+	</script>
+
 	<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 	<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 	<div class="container">
@@ -47,7 +61,8 @@
 							</a>
 						</div>
 						<div class="col-md-6">
-							<a href="<%if(user!= null && user.getRole().equals(UserRole.USER.getRole())){ %>/myCart<%}else{%>#<%}%>">
+							<a
+								href="<%if (user != null && user.getRole().equals(UserRole.USER.getRole())) {%>/myCart<%} else {%>#<%}%>">
 								<div class="navBlock">ตะกร้าสินค้า</div>
 							</a>
 						</div>
@@ -55,7 +70,8 @@
 				</div>
 				<div class="col-md-3">
 					<div class="col-md-6">
-						<a href="<%if(user!= null && user.getRole().equals(UserRole.USER.getRole())){ %>/confirmPayment<%}else{%>#<%}%>">
+						<a
+							href="<%if (user != null && user.getRole().equals(UserRole.USER.getRole())) {%>/confirmPayment<%} else {%>#<%}%>">
 							<div class="navBlock">แจ้งการชำระเงิน</div>
 						</a>
 					</div>
@@ -95,11 +111,26 @@
 
 								<table class="tableLogin">
 									<tr>
-										<td><form:label path="username" for="username">Username</form:label>
+										<td colspan="2"><c:choose>
+												<c:when test="${loginErrorMsg != null }">
+													<div class="alert alert-${loginErrorMsg.status }">
+														<span class="label label-${loginErrorMsg.status }">
+															<h3>
+																<span class="${loginErrorMsg.icon }"> </span>
+																${loginErrorMsg.header }
+															</h3>
+														</span>
+														<p>${loginErrorMsg.text }</p>
+													</div>
+												</c:when>
+											</c:choose></td>
+									</tr>
+									<tr>
+										<td><form:label path="username" for="username">ชื่อผู้ใช้</form:label>
 											<form:input path="username" class="form-control" /></td>
 									</tr>
 									<tr>
-										<td><form:label path="password" for="password">Password</form:label>
+										<td><form:label path="password" for="password">รหัสผ่าน</form:label>
 											<form:password path="password" class="form-control" /></td>
 									</tr>
 
@@ -113,7 +144,8 @@
 												<div class="col-md-6">
 													<input
 														class="btn btn-primary btn-default btn-block buttonFooter"
-														type="submit" value="Login" />
+														type="submit" onclick="return validateLogin(account)"
+														value="Login" />
 												</div>
 											</div>
 										</td>
@@ -129,27 +161,35 @@
 				<%
 					} else {
 				%>
-				<div class="row">
-					<div class="col-md-12">
-						<img src="/Images/Users/<%=user.getUsername() %>/<%=user.getImgUrl()%>" width="100px"
-							height="100px" class="img-thumbnail">
+				<div class="row ">
+					<div class="col-md-6">
+						<img
+							src="/Images/Users/<%=user.getUsername()%>/<%=user.getImgUrl()%>"
+							width="100%" height="100%" class="img-thumbnail">
+					</div>
+					<div class="col-md-6">
+						<div>
+							<b><%=user.getFirstName()%></b>
+							<%=user.getLastName()%></div>
+						<div>
+							-
+							<%=user.getUsername()%>
+							-
+						</div>
 					</div>
 
 
 
 				</div>
-
-				<div class="row">
-					<div class="col-md-12"><%=user.getFirstName()%>
-						<%=user.getLastName()%></div>
-
-
-
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<a href="/logout" class="btn btn-warning" role="button">Logout</a>
+				<div class="row footerLogin">
+					<div class="col-md-6">
+						<a href="/logout" class="btn btn-danger buttonFooter"
+							role="button">ออกจากระบบ</a>
 					</div>
+					<div class="col-md-6">
+						<a href="#" class="btn btn-success buttonFooter" role="button">แก้ไขข้อมูลส่วนตัว</a>
+					</div>
+
 				</div>
 
 				<%
@@ -192,13 +232,6 @@
 							} else {
 						%>
 
-
-						<div class="menuNavBlock">
-							<a href="/regis"> <img
-								src="../../Images/Menu Nav/menunav-register.jpg" height="100%"
-								width="100%" alt="Avatar" class="img-thumbnail imgOpacity">
-							</a>
-						</div>
 
 						<%
 							}

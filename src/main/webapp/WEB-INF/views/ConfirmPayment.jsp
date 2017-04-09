@@ -24,7 +24,7 @@
 			</tr>
 			<tr>
 				<td><label >วันที่ชำระเงิน</label></td>
-				<td><input name="date"  type="date"  /> </td>
+				<td><input name="date" class="form-control"  type="date"  /> </td>
 			</tr>
 			<tr>
 				<td><label>เวลาที่ชำระเงิน</label></td>

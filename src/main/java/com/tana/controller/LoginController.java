@@ -1,5 +1,7 @@
 package com.tana.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.tana.Repositories.AccountRepository;
 import com.tana.entities.Account;
+import com.tana.entities.ErrorMessage;
+import com.tana.utilities.IconUtility;
 
 @Controller
 public class LoginController {
@@ -36,7 +40,8 @@ public class LoginController {
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String doLogin(@ModelAttribute("SpringWeb") Account accountLogin, HttpSession session, ModelMap model) {
+	public String doLogin(@ModelAttribute("SpringWeb") Account accountLogin, HttpSession session, ModelMap model, HttpServletResponse response,
+            HttpServletRequest request) {
 		Account account = accountRepository.findByUsername(accountLogin.getUsername());
 		if (account != null) {
 			if (account.getPassword().equals(accountLogin.getPassword())) {
@@ -45,6 +50,8 @@ public class LoginController {
 				return "redirect:index";
 			}
 		}
+		ErrorMessage error = new ErrorMessage(IconUtility.DANGER.getIcon(),IconUtility.DANGER.getStatus(),"ผิดพลาด","ชื่อผู้ใช้/รหัสผ่านผิดพลาด");
+		request.setAttribute("loginErrorMsg",error);
 		return "redirect:index";
 	}
 

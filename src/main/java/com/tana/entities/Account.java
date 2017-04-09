@@ -1,5 +1,6 @@
 package com.tana.entities;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
@@ -17,7 +18,7 @@ public class Account implements java.io.Serializable {
 	private String firstName;
 	private String lastName;
 	private String gender;
-	private String birthDate;
+	private Date birthDate;
 	private String telephoneNumber;
 	private String role;
 	private List<Orders> listOrder;
@@ -25,7 +26,7 @@ public class Account implements java.io.Serializable {
 	public Account(){}
 	
 	public Account(long accountId, String username, String password, String firstName, String lastName, String gender,
-			String birthDate, String telephoneNumber, List<Orders> listOrder,String role,String imgUrl) {
+			Date birthDate, String telephoneNumber, List<Orders> listOrder,String role,String imgUrl) {
 		super();
 		this.accountId = accountId;
 		this.username = username;
@@ -94,12 +95,12 @@ public class Account implements java.io.Serializable {
 		this.gender = gender;
 	}
 	
-	@Column(name="birthdate",nullable=false)
-	public String getBirthDate() {
+	@Column(name="birthdate")
+	public Date getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(String birthDate) {
+	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
 	}
 	
