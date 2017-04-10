@@ -14,7 +14,7 @@ public class VariableUtility {
 		String path = IMG_PATH_PRODUCTS+productId+"_"+productName+"/";
 		LOGGER.info("Get product path file : "+path);
 		return path;
-	}
+	}  
 	
 	public static String getUserPathFile(String username){
 		String path = IMG_PATH_USERS+username+"/";
