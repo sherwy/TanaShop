@@ -13,7 +13,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name="general_shop_detail" , catalog="tana_shopping")
-public class GeneralShopDetail {
+public class GeneralDetail {
 	private long id;
 	private String shopName;
 	private String shopDescription;
@@ -22,9 +22,9 @@ public class GeneralShopDetail {
 	private String email;
 	private Date dateChanged;
 	
-	public GeneralShopDetail(){}
+	public GeneralDetail(){}
 
-	public GeneralShopDetail(long id, String shopName, String shopDescription, String shopDetail, String shopTelephone,
+	public GeneralDetail(long id, String shopName, String shopDescription, String shopDetail, String shopTelephone,
 			String email, Date dateChanged) {
 		super();
 		this.id = id;

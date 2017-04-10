@@ -1,14 +1,14 @@
 package com.tana.entities;
 
-public class ErrorMessage {
+public class AlertMessage {
 	private String icon;
 	private String status;
 	private String header;
 	private String text;
 	
-	public ErrorMessage(){}
+	public AlertMessage(){}
 	
-	public ErrorMessage(String icon, String status, String header, String text) {
+	public AlertMessage(String icon, String status, String header, String text) {
 		super();
 		this.icon = icon;
 		this.status = status;

@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.tana.Repositories.AccountRepository;
 import com.tana.entities.Account;
-import com.tana.entities.ErrorMessage;
+import com.tana.entities.AlertMessage;
 import com.tana.utilities.DateUtilities;
 import com.tana.utilities.FolderUtilities;
 import com.tana.utilities.IconUtility;

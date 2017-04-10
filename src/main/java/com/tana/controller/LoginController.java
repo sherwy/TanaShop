@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.tana.Repositories.AccountRepository;
 import com.tana.entities.Account;
-import com.tana.entities.ErrorMessage;
+import com.tana.entities.AlertMessage;
 import com.tana.utilities.IconUtility;
 
 @Controller
@@ -50,7 +50,7 @@ public class LoginController {
 				return "redirect:index";
 			}
 		}
-		ErrorMessage error = new ErrorMessage(IconUtility.DANGER.getIcon(),IconUtility.DANGER.getStatus(),"ผิดพลาด","ชื่อผู้ใช้/รหัสผ่านผิดพลาด");
+		AlertMessage error = new AlertMessage(IconUtility.DANGER.getIcon(),IconUtility.DANGER.getStatus(),"ผิดพลาด","ชื่อผู้ใช้/รหัสผ่านผิดพลาด");
 		model.addAttribute("loginErrorMsg",error);
 		return "index";
 	}
