@@ -16,6 +16,7 @@ import com.tana.Repositories.GeneralDetailRepository;
 import com.tana.entities.Account;
 import com.tana.entities.AlertMessage;
 import com.tana.entities.GeneralDetail;
+import com.tana.utilities.IconUtility;
 import com.tana.utilities.SessionUtility;
 
 @Controller
@@ -48,7 +49,8 @@ public class GeneralDetailController {
 		if (account != null) {
 			generalDetailManager.save(generalDetail);
 		}
-		AlertMessage success = new AlertMessage();
+		AlertMessage success = new AlertMessage(IconUtility.SUCCESS.getIcon(),IconUtility.SUCCESS.getStatus(),"สำเร็จ","แก้ไขข้อมูลทั่วไปสำเร็จ");
+		model.addAttribute("alert",success);
 		return "index";
 	}
 }

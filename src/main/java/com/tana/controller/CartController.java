@@ -17,6 +17,7 @@ import com.tana.Repositories.OrderLineRepository;
 import com.tana.Repositories.OrdersRepository;
 import com.tana.Repositories.ProductRepository;
 import com.tana.entities.Account;
+import com.tana.entities.AlertMessage;
 import com.tana.entities.OrderLine;
 import com.tana.entities.Orders;
 import com.tana.entities.Payment;
@@ -41,6 +42,11 @@ public class CartController {
 	@ModelAttribute("account")
 	public Account getAccount(){
 		return new Account();
+	}
+	
+	@ModelAttribute("alert")
+	public AlertMessage getAlert(){
+		return new AlertMessage(); 
 	}
 	
 	@RequestMapping(value = "/myCart")
