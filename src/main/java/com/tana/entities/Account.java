@@ -94,7 +94,7 @@ public class Account implements java.io.Serializable {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	
+	@Temporal(TemporalType.DATE)
 	@Column(name="birthdate")
 	public Date getBirthDate() {
 		return birthDate;

@@ -51,8 +51,8 @@ public class LoginController {
 			}
 		}
 		ErrorMessage error = new ErrorMessage(IconUtility.DANGER.getIcon(),IconUtility.DANGER.getStatus(),"ผิดพลาด","ชื่อผู้ใช้/รหัสผ่านผิดพลาด");
-		request.setAttribute("loginErrorMsg",error);
-		return "redirect:index";
+		model.addAttribute("loginErrorMsg",error);
+		return "index";
 	}
 
 	@RequestMapping(value = "/logout")

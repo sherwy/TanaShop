@@ -7,12 +7,19 @@
 <link href="/Tools/css/bootstrap.css" rel="stylesheet">
 <link href="/Tools/css/main.css" rel="stylesheet">
 <link rel="shortcut icon" href="../favicon.ico">
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-
 <title>Tana Shop :: ${param.title }</title>
+
+<script type="text/javascript"
+	src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("body").css("display", "none");
+		$("body").fadeIn(500);
+	});
+</script>
 </head>
 <body>
+
 	<script language="JavaScript">
 		function validateLogin(frm) {
 			if (frm.username.value == "") {
@@ -30,7 +37,6 @@
 	<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 	<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 	<div class="container">
-
 		<%@ page import="com.tana.entities.*"%>
 		<%@ page import="com.tana.utilities.*"%>
 		<%
@@ -42,59 +48,97 @@
 
 		<!-- nav -->
 		<div class="row">
-			<div class="navContainer">
-				<div class="col-md-3">
-					<div class="row">
-						<div class="col-md-12">
-							<a href="#">
-								<div class="navBlock">หน้าแรก</div>
-							</a>
-						</div>
-					</div>
+			<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed"
+						data-toggle="collapse" data-target="#menunav-all"
+						aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#"><span
+						class="glyphicon glyphicon-chevron-right"></span></a>
 				</div>
-				<div class="col-md-3">
-					<div class="row">
-						<div class="col-md-6">
-							<a href="/howTo">
 
-								<div class="navBlock">วิธีการสั่งซื้อ</div>
-							</a>
-						</div>
-						<div class="col-md-6">
-							<a
-								href="<%if (user != null && user.getRole().equals(UserRole.USER.getRole())) {%>/myCart<%} else {%>#<%}%>">
-								<div class="navBlock">ตะกร้าสินค้า</div>
-							</a>
-						</div>
-					</div>
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="collapse navbar-collapse" id="menunav-all">
+					<ul class="nav navbar-nav menuNavBlock">
+						<%
+							if (user == null || user.getRole().equals(UserRole.ADMIN.getRole())) {
+						%>
+						<li class="menuNav"><a href="/index">หน้าแรก</a></li>
+						<li class="menuNav"><a href="/howTo">วิธีการสั่งซื้อ</a></li>
+						<li class="menuNav"><a href="#">เว็บบอร์ด</a></li>
+						<li class="menuNav"><a href="#">เกี่ยวกับเรา</a></li>
+						<li class="menuNav"><a href="#">ติดต่อเรา</a></li>
+						<%
+							} else if (user != null && user.getRole().equals(UserRole.USER.getRole())) {
+						%>
+
+						<li class="menuNav"><a href="/index">หน้าแรก</a></li>
+						<li class="menuNav"><a href="/howTo">วิธีการสั่งซื้อ</a></li>
+						<li class="menuNav"><a href="/myCart">ตะกร้าสินค้า</a></li>
+						<li class="menuNav"><a href="/confirmPayment">แจ้งการชำระเงิน</a></li>
+						<li class="menuNav"><a href="#">เว็บบอร์ด</a></li>
+						<li class="menuNav"><a href="#">เกี่ยวกับเรา</a></li>
+						<li class="menuNav"><a href="#">ติดต่อเรา</a></li>
+
+						<%
+							}
+						%>
+					</ul>
 				</div>
-				<div class="col-md-3">
-					<div class="col-md-6">
-						<a
-							href="<%if (user != null && user.getRole().equals(UserRole.USER.getRole())) {%>/confirmPayment<%} else {%>#<%}%>">
-							<div class="navBlock">แจ้งการชำระเงิน</div>
-						</a>
-					</div>
-					<div class="col-md-6">
-						<a href="#">
-							<div class="navBlock">เว็บบอร์ด</div>
-						</a>
-					</div>
-				</div>
-				<div class="col-md-3">
-					<div class="col-md-6">
-						<a href="#">
-							<div class="navBlock">เกี่ยวกับเรา</div>
-						</a>
-					</div>
-					<div class="col-md-6">
-						<a href="#">
-							<div class="navBlock">ติดต่อเรา</div>
-						</a>
-					</div>
-				</div>
+
 			</div>
+			</nav>
 		</div>
+
+		<%
+			if (user != null && user.getRole().equals(UserRole.ADMIN.getRole())) {
+		%>
+		<div class="row">
+			<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed"
+						data-toggle="collapse" data-target="#manunav-admin"
+						aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span> <span
+							class="icon-bar"></span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#"><span
+						class="glyphicon glyphicon-asterisk"></span></a>
+				</div>
+				<div class="collapse navbar-collapse" id="manunav-admin">
+					<ul class="nav navbar-nav navbar-right menuNavBlock-admin">
+						<li class="menuNav-admin"><a href="/editGeneralDetail">ข้อมูลทั่วไป</a></li>
+						<li class="menuNav-admin"><a href="#" class="dropdown-toggle"
+							data-toggle="dropdown" role="button" aria-haspopup="true"
+							aria-expanded="false">จัดการสินค้า <span class="caret"></span>
+						</a>
+							<ul class="menuNavBlock-inside dropdown-menu">
+								<li class="menuNav-inside"><a href="/addProduct">เพิ่มสินค้าใหม่</a></li>
+								<li class="menuNav-inside"><a href="/listAdminProduct">รายการสินค้า</a></li>
+								<li class="menuNav-inside"><a href="/addCategory">เพิ่มหมวดหมู่</a></li>
+							</ul></li>
+						<li class="menuNav-admin"><a href="/listAllOrder">รายการสั่งซื้อ</a></li>
+						<li class="menuNav-admin"><a href="#">การเงิน</a></li>
+						<li class="menuNav-admin"><a href="#">ขนส่งสินค้า</a></li>
+						<li class="menuNav-admin"><a href="#">จัดการลูกค้า</a></li>
+
+
+					</ul>
+				</div>
+
+			</div>
+			</nav>
+		</div>
+		<%
+			}
+		%>
 
 		<!-- content -->
 		<div class="row">
@@ -114,13 +158,14 @@
 										<td colspan="2"><c:choose>
 												<c:when test="${loginErrorMsg != null }">
 													<div class="alert alert-${loginErrorMsg.status }">
-														<span class="label label-${loginErrorMsg.status }">
+														<strong>
 															<h3>
 																<span class="${loginErrorMsg.icon }"> </span>
 																${loginErrorMsg.header }
 															</h3>
-														</span>
-														<p>${loginErrorMsg.text }</p>
+														</strong>
+
+														<p class="error-text">${loginErrorMsg.text }</p>
 													</div>
 												</c:when>
 											</c:choose></td>
@@ -195,49 +240,6 @@
 				<%
 					}
 				%>
-				<div class="row">
-					<div class="col-md-12">
-						<%
-							if (user != null) {
-						%>
-
-
-						<%
-							if (user.getRole().equals(UserRole.ADMIN.getRole())) {
-						%>
-						<div class="menuNavBlock">
-							<a href="/addProduct"> <img
-								src="../../Images/Menu Nav/menunav-addproduct.jpg" height="100%"
-								width="100%" alt="Avatar" class="img-thumbnail imgOpacity">
-							</a>
-						</div>
-						<div class="menuNavBlock">
-							<a href="listAllOrder"> <img
-								src="../../Images/Menu Nav/menunav-listproducts.jpg"
-								height="100%" width="100%" alt="Avatar"
-								class="img-thumbnail imgOpacity">
-							</a>
-						</div>
-						<a href="/listAdminProduct" class="btn btn-success" role="button">Manage
-							Product</a> <a href="/addCategory" class="btn btn-success"
-							role="button">Add Cateogry</a>
-						<%
-							} else {
-						%>
-						<a href="/listProduct" class="btn btn-success" role="button">List
-							Product</a> <a href="/myCart" class="btn btn-success" role="button">My
-							Cart</a>
-						<%
-							}
-							} else {
-						%>
-
-
-						<%
-							}
-						%>
-					</div>
-				</div>
 			</div>
 
 			<!-- content -->

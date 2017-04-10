@@ -11,6 +11,55 @@ body .container {
 	font-size: 120%;
 }
 
+.menuNavBlock li.menuNav:hover {
+	background: #b00202;
+	color: #FFFFFF;
+	transition: .5s;
+}
+
+.menuNavBlock li.menuNav a:hover {
+	font-size: 200%;
+	color: #FFFFFF;
+	transition: .5s;
+}
+
+.menuNavBlock-admin li.menuNav-admin:hover {
+	background: #242666;
+	transition: .5s;
+}
+
+.menuNavBlock-admin li.menuNav-admin a:hover {
+	font-size: 200%;
+	color: #FFFFFF;
+	transition: .5s;
+}
+
+.menuNavBlock-inside li.menuNav-inside a:hover {
+	color: #242666;
+	transition: .5s;
+}
+
+@media ( max-width : 767px) {
+	.menuNavBlock-inside li.menuNav-inside a:hover {
+		color: #FFFFFF;
+	}
+	.menuNavBlock-admin li.menuNav-admin:hover .menuNavBlock-inside li.menuNav-inside{
+		background: #eee;
+		transition: .5s;
+	}
+	
+	.menuNavBlock-admin li.menuNav-admin .menuNavBlock-inside li.menuNav-inside:hover{
+		background: #242666;
+		color:#FFFFFF;
+		transition: .5s;
+	}
+	
+	.menuNavBlock-admin li.menuNav-admin .menuNavBlock-inside li.menuNav-inside:hover a{
+		color:#FFFFFF;
+		transition: .5s;
+	}
+}
+
 .headerbanner {
 	background: url("../../Images/banner/header.jpg") no-repeat center
 		center;
@@ -18,35 +67,8 @@ body .container {
 	height: 506px;
 }
 
-.menuNav {
-	padding: 10px;
-}
-
 table.tableLogin {
 	width: 100%;
-}
-
-.menuNavBlock {
-	position: relative;
-}
-
-.menuNavBlock .imgOpacity {
-	display: block;
-	height: auto;
-	opacity: 0.5;
-	transition: .5s ease;
-}
-
-.menuNavBlock .imgOpacity:hover {
-	opacity: 1;
-	transition: .5s ease;
-}
-
-.menuNavBlock span.insideContent:before {
-	content: '';
-	display: inline-block;
-	height: 100%;
-	vertical-align: middle;
 }
 
 .navContainer {
@@ -56,9 +78,9 @@ table.tableLogin {
 	margin-right: auto;
 }
 
-.navContainer  div{
-	padding:0;
-	margin:0;
+.navContainer  div {
+	padding: 0;
+	margin: 0;
 }
 
 .navBlock {
@@ -90,27 +112,34 @@ table.tableLogin {
 	z-index: 1;
 }
 
-a.buttonFooter{
-	width:100%;
+a.buttonFooter {
+	width: 100%;
 }
 
-input.buttonFooter{
-	width:100%;
+input.buttonFooter {
+	width: 100%;
 }
 
-div.footerLogin{
-	padding-top:10px;
+div.footerLogin {
+	padding-top: 10px;
 }
 
-span.span-img-howto{
-	font-size:300%
+span.span-img-howto {
+	font-size: 300%
 }
 
-.navBlock:hover .navContent{
+.navBlock:hover .navContent {
 	display: block;
 	transition: 0.5s ease;
 }
 
+p.error-text {
+	text-align: center;
+}
+
+span.label-danger h3 {
+	color: #a94442;
+}
 
 @font-face {
 	font-family: defaultFont;

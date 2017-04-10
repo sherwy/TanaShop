@@ -66,11 +66,6 @@ public class RegisterController {
 			String filePath = VariableUtility.getUserPathFile(accountReturned.getUsername());
 			FolderUtilities.createFolderIfNotExist(filePath);
 			// Get the file and save it somewhere
-			if(file.getSize() >= 1048576){
-				ErrorMessage error = new ErrorMessage(IconUtility.DANGER.getIcon(),IconUtility.DANGER.getStatus(),"ผิดพลาด","ไม่สามารถอัพโหลดรุปได้ กรุณาลองใหม่อีกครั้ง");
-				model.addAttribute("errorMsg",error);
-				return "redirect:index";
-			}
 			byte[] bytes = file.getBytes();
 			fileName = account.getUsername() + "_" + file.getOriginalFilename();
 			LOGGER.info("File name : " + fileName);
