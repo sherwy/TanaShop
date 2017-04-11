@@ -7,6 +7,43 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<script language="JavaScript">
+	function validateGeneralDetail(frm){
+		if(frm.shopName.value == ""){
+		   alert("กรุณากรอกชื่อร้าน");
+		   frm.shopName.focus();
+			return fales;
+		   }
+		if(frm.shopDescription.value == ""){
+		   alert("กรุณากรอกรายละเอียดร้านค้า");
+		   frm.shopDescription.focus();
+			return fales;
+		   }
+		if(frm.shopDetail.value == ""){
+		   alert("กรุณากรอกข้อมูลร้านค้า");
+		   frm.shopDetail.focus();
+			return fales;
+		   }
+		if(frm.shopTelephone.value == ""){
+		   alert("กรุณากรอกเบอร์โทรศัพท์");
+		   frm.shopTelephone.focus();
+			return fales;
+		   }else{
+		   var reg = /^(0)[0-9]{9}$/;
+		   if(reg.test(frm.shopTelephone.value)){
+		   	alert("กรุณากรอกเบอร์โทรศัพท์ที่เป็นตัวเลขและขึ้นต้นด้วย 0");
+		   	frm.shopTelephone.focus();
+			return fales;
+		   }
+		   }
+		if(frm.email.value == ""){
+		   alert("กรุณากรอกอีเมล");
+		   frm.email.focus();
+			return fales;
+		   }
+	}
+</script>
 <div class="form-group">
 	<form:form action="/editGeneralDetail" method="POST"
 		modelAttribute="generalDetail">
@@ -44,7 +81,7 @@
 								<div class="col-md-4"></div>
 								<div class="col-md-4">
 									<p class="text-center">
-										<input class="btn btn-primary" onclick="#" type="submit"
+										<input class="btn btn-primary" onclick="validateGeneralDetail(generalDetail)" type="submit"
 											value="บันทึก" />
 									</p>
 								</div>
@@ -85,7 +122,7 @@
 								<div class="col-md-4"></div>
 								<div class="col-md-4">
 									<p class="text-center">
-										<input class="btn btn-primary" onclick="#" type="submit"
+										<input class="btn btn-primary" onclick="validateGeneralDetail(generalDetail)" type="submit"
 											value="บันทึก" />
 									</p>
 								</div>
