@@ -7,7 +7,15 @@
 <link href="/Tools/css/bootstrap.css" rel="stylesheet">
 <link href="/Tools/css/main.css" rel="stylesheet">
 <link rel="shortcut icon" href="../favicon.ico">
-<title>Tana Shop :: ${param.title }</title>
+<%@page import="com.google.gson.Gson"%>
+<%
+	String generalDetailJson = JsonReader.readUrl("http://localhost:8081/rest/generalDetailShop");
+	String welcomeDetailJson = JsonReader.readUrl("http://localhost:8081/rest/welcomeDetail");
+	Gson gson = new Gson();
+	GeneralDetail general = gson.fromJson(generalDetailJson, GeneralDetail.class);
+	WelcomeDetail welcome = gson.fromJson(welcomeDetailJson, WelcomeDetail.class);
+%>
+<title><%=general.getShopName()%> :: ${param.title }</title>
 
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -44,7 +52,9 @@
 		%>
 
 		<!--  banner -->
-		<div class="row headerbanner"></div>
+		<div class="row headerbanner">
+			<marquee><%=welcome.getWelcomeText()%></marquee>
+		</div>
 
 		<!-- nav -->
 		<div class="row">
@@ -114,7 +124,14 @@
 				</div>
 				<div class="collapse navbar-collapse" id="manunav-admin">
 					<ul class="nav navbar-nav navbar-right menuNavBlock-admin">
-						<li class="menuNav-admin"><a href="/editGeneralDetail">ข้อมูลทั่วไป</a></li>
+						<li class="menuNav-admin"><a href="#" class="dropdown-toggle"
+							data-toggle="dropdown" role="button" aria-haspopup="true"
+							aria-expanded="false">ข้อมูลทั่วไป <span class="caret"></span>
+						</a>
+							<ul class="menuNavBlock-inside dropdown-menu">
+								<li class="menuNav-inside"><a href="/editGeneralDetail">เกี่ยวกับร้าน</a></li>
+								<li class="menuNav-inside"><a href="/welcomeDetail">ข้อความต้อนรับ</a></li>
+							</ul></li>
 						<li class="menuNav-admin"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown" role="button" aria-haspopup="true"
 							aria-expanded="false">จัดการสินค้า <span class="caret"></span>
@@ -125,9 +142,32 @@
 								<li class="menuNav-inside"><a href="/addCategory">เพิ่มหมวดหมู่</a></li>
 							</ul></li>
 						<li class="menuNav-admin"><a href="/listAllOrder">รายการสั่งซื้อ</a></li>
-						<li class="menuNav-admin"><a href="#">การเงิน</a></li>
-						<li class="menuNav-admin"><a href="#">ขนส่งสินค้า</a></li>
-						<li class="menuNav-admin"><a href="#">จัดการลูกค้า</a></li>
+						<li class="menuNav-admin"><a href="#" class="dropdown-toggle"
+							data-toggle="dropdown" role="button" aria-haspopup="true"
+							aria-expanded="false">การเงิน <span class="caret"></span>
+						</a>
+							<ul class="menuNavBlock-inside dropdown-menu">
+								<li class="menuNav-inside"><a href="#">รายการแจ้งชำระเงิน</a></li>
+								<li class="menuNav-inside"><a href="#">บัญชีธนาคาร</a></li>
+							</ul></li>
+						<li class="menuNav-admin"><a href="#" class="dropdown-toggle"
+							data-toggle="dropdown" role="button" aria-haspopup="true"
+							aria-expanded="false">ขนส่งสินค้า <span class="caret"></span>
+						</a>
+							<ul class="menuNavBlock-inside dropdown-menu">
+								<li class="menuNav-inside"><a href="#">รายการจัดส่งสินค้า</a></li>
+								<li class="menuNav-inside"><a href="#">รูปแบบการขนส่งสินค้า</a></li>
+							</ul></li>
+						<li class="menuNav-admin"><a href="#" class="dropdown-toggle"
+							data-toggle="dropdown" role="button" aria-haspopup="true"
+							aria-expanded="false">จัดการลูกค้า <span class="caret"></span>
+						</a>
+							<ul class="menuNavBlock-inside dropdown-menu">
+								<li class="menuNav-inside"><a href="#">รายการติดต่อจากลูกค้า</a></li>
+								<li class="menuNav-inside"><a href="#">เว็บบอร์ด</a></li>
+								<li class="menuNav-inside"><a href="#">รายชื่อลูกค้า</a></li>
+							</ul></li>
+						</li>
 
 
 					</ul>
@@ -244,3 +284,17 @@
 
 			<!-- content -->
 			<div class="col-md-9">
+
+				<c:choose>
+					<c:when test="${alert != null }">
+						<div class="alert alert-${alert.icon.status }">
+							<strong>
+								<h3 class="center-content">
+									<span class="${alert.icon.icon }"> </span> ${alert.alertTitle }
+								</h3>
+							</strong>
+
+							<p class="error-text">${alert.alertDetail }</p>
+						</div>
+					</c:when>
+				</c:choose>

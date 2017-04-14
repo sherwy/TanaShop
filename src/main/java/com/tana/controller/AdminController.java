@@ -21,9 +21,11 @@ import com.tana.entities.Account;
 import com.tana.entities.Delivery;
 import com.tana.entities.Orders;
 import com.tana.entities.Product;
+import com.tana.utilities.AlertMessage;
 import com.tana.utilities.OrderStatusUtilities;
 import com.tana.utilities.ProductStatusUtilities;
 import com.tana.utilities.SessionUtility;
+import com.tana.utilities.UserRole;
 
 @Controller
 public class AdminController {
@@ -38,61 +40,91 @@ public class AdminController {
 
 	@Autowired
 	private DeliveryRepository deliveryManager;
-	
+
+	@ModelAttribute("account")
+	public Account getAccount() {
+		return new Account();
+	}
+
+	@SuppressWarnings("unused")
 	@RequestMapping("/listAllOrder")
 	public String listAllOrder(HttpSession session, Model model) {
 		Account account = SessionUtility.getAccount(session);
-
-		if (account != null) {
-			List<Orders> listOrder = ordersManager.findOrderByOrderStatusOnExcept(OrderStatusUtilities.CART.getStatus());
-			List<Orders> listDeliveryOrder = ordersManager.findOrderByOrderStatus(OrderStatusUtilities.PENDING_DELIVERY.getStatus());
+		AlertMessage successAlert = null;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+		
+		if(successAlert == generatedAlert){
+			List<Orders> listOrder = ordersManager
+					.findOrderByOrderStatusOnExcept(OrderStatusUtilities.CART.getStatus());
+			List<Orders> listDeliveryOrder = ordersManager
+					.findOrderByOrderStatus(OrderStatusUtilities.PENDING_DELIVERY.getStatus());
 			if (listOrder != null) {
-				model.addAttribute("listDeliveryOrder",listDeliveryOrder);
+				model.addAttribute("listDeliveryOrder", listDeliveryOrder);
 				model.addAttribute("listOrder", listOrder);
-				model.addAttribute("delivery",new Delivery());
+				model.addAttribute("delivery", new Delivery());
 			}
+			if(generatedAlert != null)
+				model.addAttribute("alert",generatedAlert);
 			return "ListOrder";
-		} else {
-			return "redirect:index";
+		}else{
+			model.addAttribute("alert",generatedAlert);
 		}
-
+		return "index";
 	}
 
 	@RequestMapping(value = "/deleteProduct/{productId}", method = RequestMethod.GET)
 	public String doEditProduct(@PathVariable("productId") int productId, HttpSession session, ModelMap model) {
 		LOGGER.info("Product id '" + productId + "' has requested to edit");
-
 		Account account = SessionUtility.getAccount(session);
-		if (account != null) {
-			List<Product> listProductInOrder = productManager.findProductInOrder(productId);
-			Product product = productManager.findProductByProductId(productId);
-			if (listProductInOrder != null && listProductInOrder.size() > 0) {
-				product.setStatus(ProductStatusUtilities.DELETED.getStatus());
-				productManager.save(product);
-			} else {
-				productManager.delete(product);
-			}
+		AlertMessage successAlert = AlertMessage.DELETE_PRODUCT_SUCCESS;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+		
+		if(successAlert == generatedAlert){
+				List<Product> listProductInOrder = productManager.findProductInOrder(productId);
+				Product product = productManager.findProductByProductId(productId);
+				if (listProductInOrder != null && listProductInOrder.size() > 0) {
+					product.setStatus(ProductStatusUtilities.DELETED.getStatus());
+					productManager.save(product);
+				} else {
+					productManager.delete(product);
+				}
+				model.addAttribute("alert",successAlert);
+				return "../listAdminProduct";
+		}else{
+			model.addAttribute("alert",generatedAlert);
 		}
-		return "redirect:../listAdminProduct";
+		return "../index";
 	}
-	
+
 	@RequestMapping(value = "/verifyOrder/{orderId}", method = RequestMethod.GET)
-	public String verifyOrder(@PathVariable("orderId")int orderId, HttpSession session, ModelMap model){
+	public String verifyOrder(@PathVariable("orderId") int orderId, HttpSession session, ModelMap model) {
 		Account account = SessionUtility.getAccount(session);
-		if (account != null) {
+		AlertMessage successAlert = AlertMessage.VERIFY_ORDER_SUCCESS;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+		
+		if(successAlert == generatedAlert){
+	
 			String status = OrderStatusUtilities.PENDING_DELIVERY.getStatus();
 			Orders order = ordersManager.findByOrderId(orderId);
 			order.setStatus(OrderStatusUtilities.PENDING_DELIVERY.getStatus());
 			ordersManager.save(order);
-			LOGGER.info("OrderId {"+orderId+"} : Change order status from ["+order.getStatus()+"] to ["+status+"]");
+			LOGGER.info("OrderId {" + orderId + "} : Change order status from [" + order.getStatus() + "] to [" + status
+					+ "]");
+			model.addAttribute("alert",generatedAlert);
+			return "../listAllOrder";
+		}else{
+			model.addAttribute("alert",generatedAlert);
 		}
-		return "redirect:../listAllOrder";
+		return "../index";
 	}
-	
+
 	@RequestMapping(value = "/deliveryOrder", method = RequestMethod.POST)
-	public String deliveryOrder(@ModelAttribute Delivery delivery, HttpSession session, ModelMap model){
+	public String deliveryOrder(@ModelAttribute Delivery delivery, HttpSession session, ModelMap model) {
 		Account account = SessionUtility.getAccount(session);
-		if (account != null) {
+		AlertMessage successAlert = AlertMessage.VERIFY_ORDER_SUCCESS;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+		
+		if(successAlert == generatedAlert){
 			String status = OrderStatusUtilities.DELIVERED.getStatus();
 			long orderId = delivery.getOrder().getOrderId();
 			deliveryManager.save(delivery);
@@ -100,9 +132,14 @@ public class AdminController {
 			order.setDelivery(delivery);
 			order.setStatus(status);
 			ordersManager.save(order);
-			LOGGER.info("OrderId {"+orderId+"} : Change order status from ["+order.getStatus()+"] to ["+status+"]");
+			LOGGER.info("OrderId {" + orderId + "} : Change order status from [" + order.getStatus() + "] to [" + status
+					+ "]");
+			model.addAttribute("alert",generatedAlert);
+			return "listAllOrder";
+		}else{
+			model.addAttribute("alert",generatedAlert);
 		}
-		return "redirect:listAllOrder";
+		return "index";
 	}
 
 }

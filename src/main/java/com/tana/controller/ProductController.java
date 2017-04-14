@@ -29,9 +29,12 @@ import com.tana.entities.Account;
 import com.tana.entities.Orders;
 import com.tana.entities.OrderLine;
 import com.tana.entities.Product;
+import com.tana.utilities.AlertMessage;
 import com.tana.utilities.FolderUtilities;
+import com.tana.utilities.IconUtility;
 import com.tana.utilities.ProductStatusUtilities;
 import com.tana.utilities.SessionUtility;
+import com.tana.utilities.UserRole;
 import com.tana.utilities.VariableUtility;
 
 @Controller
@@ -52,56 +55,81 @@ public class ProductController {
 	public Product getProduct() {
 		return new Product();
 	}
-	
+
 	@ModelAttribute("account")
-	public Account getAccount(){
+	public Account getAccount() {
 		return new Account();
 	}
 
 	@GetMapping(value = "/addProduct")
-	public String goToAddProduct(Model model) {
-		model.addAttribute("listCategory", categoryManager.findParentCategory());
-		return "AddProduct";
+	public String goToAddProduct(HttpSession session, Model model) {
+		Account account = SessionUtility.getAccount(session);
+		if (account != null) {
+			if(account.getRole().equals(UserRole.ADMIN.getRole())){
+				model.addAttribute("listCategory", categoryManager.findParentCategory());
+				return "AddProduct";
+			}else{
+				model.addAttribute("alert",AlertMessage.NON_PERMISSION);
+			}
+		} else {
+			model.addAttribute("alert",AlertMessage.ANONYMOUS_USER);
+		}
+		return "index";
 	}
 
 	@RequestMapping(value = "/addProduct", method = RequestMethod.POST)
 	public String doAddProduct(@ModelAttribute("SpringWeb") Product product,
-			@RequestParam("file") MultipartFile[] files, HttpSession session, ModelMap model) {
-		LOGGER.info("IMG : " + product.getImgUrl());
-		LOGGER.info("Product '" + product.getProductId() + "' has been saved.");
-		if (files == null || files.length <= 0) {
-			LOGGER.info("File is empty");
-			return "redirect:index";
-		}
-		
-		product.setStatus(ProductStatusUtilities.AVAILABLE.getStatus());
-		Product productReturned = productManager.save(product);
-		
-		String fileName = null;
-		String imgUrlDB = "";
-		try {
-			String pathFile = VariableUtility.getProductPathFile(productReturned.getProductId()+"", productReturned.getProductName());
-			FolderUtilities.createFolderIfNotExist(pathFile);
-			for (int i = 0; i < files.length; i++) {
-				if(i!=0){
-					imgUrlDB += ",";
+			@RequestParam("file") MultipartFile[] files, @RequestParam("productDetailText") String productDetailText,
+			HttpSession session, ModelMap model) {
+		Account account = SessionUtility.getAccount(session);
+		if (account != null) {
+			if (account.getRole().equals(UserRole.ADMIN.getRole())) {
+				LOGGER.info("IMG : " + product.getImgUrl());
+				LOGGER.info("Product '" + product.getProductId() + "' has been saved.");
+				LOGGER.info("Product Detail : " + productDetailText);
+				if (files == null || files.length <= 0) {
+					LOGGER.info("File is empty");
+					return "redirect:index";
 				}
-				MultipartFile file = files[i];
-				// Get the file and save it somewhere
-				byte[] bytes = file.getBytes();
-				fileName = product.getProductId() + "_" + product.getProductName() + file.getOriginalFilename();
-				LOGGER.info("File name : " + fileName);
-				imgUrlDB += fileName;
-				Path path = Paths.get(pathFile + fileName);
-				Files.write(path, bytes);
+
+				product.setStatus(ProductStatusUtilities.AVAILABLE.getStatus());
+				product.setProductDetail(productDetailText);
+				Product productReturned = productManager.save(product);
+
+				String fileName = null;
+				String imgUrlDB = "";
+				try {
+					String pathFile = VariableUtility.getProductPathFile(productReturned.getProductId() + "",
+							productReturned.getProductName());
+					FolderUtilities.createFolderIfNotExist(pathFile);
+					for (int i = 0; i < files.length; i++) {
+						if (i != 0) {
+							imgUrlDB += ",";
+						}
+						MultipartFile file = files[i];
+						// Get the file and save it somewhere
+						byte[] bytes = file.getBytes();
+						fileName = product.getProductId() + "_" + product.getProductName() + file.getOriginalFilename();
+						LOGGER.info("File name : " + fileName);
+						imgUrlDB += fileName;
+						Path path = Paths.get(pathFile + fileName);
+						Files.write(path, bytes);
+					}
+					productReturned.setImgUrl(imgUrlDB);
+					productManager.save(productReturned);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				product.setImgUrl(fileName);
+				model.addAttribute("alert", AlertMessage.ADD_PROD_SUCCESS);
+				return "index";
+			} else {
+				model.addAttribute("alert", AlertMessage.NON_PERMISSION);
 			}
-			productReturned.setImgUrl(imgUrlDB);
-			productManager.save(productReturned);
-		} catch (IOException e) {
-			e.printStackTrace();
+		} else {
+
 		}
-		product.setImgUrl(fileName);
-		return "redirect:index";
+		return "index";
 	}
 
 	@GetMapping(value = "/listProduct")

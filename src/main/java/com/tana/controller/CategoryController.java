@@ -26,6 +26,11 @@ public class CategoryController {
 	@Autowired
 	private CategoryRepository categoryManager;
 
+	@ModelAttribute("account")
+	public Account getAccount(){
+		return new Account();
+	}
+	
 	@RequestMapping(value = "/addCategory", method = RequestMethod.GET)
 	public String doAddCategory(HttpSession session, Model model) {
 		Account account = SessionUtility.getAccount(session);

@@ -17,12 +17,13 @@ import com.tana.Repositories.OrderLineRepository;
 import com.tana.Repositories.OrdersRepository;
 import com.tana.Repositories.ProductRepository;
 import com.tana.entities.Account;
-import com.tana.entities.AlertMessage;
 import com.tana.entities.OrderLine;
 import com.tana.entities.Orders;
 import com.tana.entities.Payment;
 import com.tana.entities.Product;
 import com.tana.utilities.SessionUtility;
+import com.tana.utilities.UserRole;
+import com.tana.utilities.AlertMessage;
 import com.tana.utilities.OrderStatusUtilities;
 
 @Controller
@@ -40,35 +41,32 @@ public class CartController {
 	private OrderLineRepository orderLineManager;
 
 	@ModelAttribute("account")
-	public Account getAccount(){
+	public Account getAccount() {
 		return new Account();
 	}
-	
-	@ModelAttribute("alert")
-	public AlertMessage getAlert(){
-		return new AlertMessage(); 
-	}
-	
+
 	@RequestMapping(value = "/myCart")
 	public String goToMyCart(HttpSession session, ModelMap model) {
 
 		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = null;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.USER, account, successAlert);
 
-		if (account != null) {
-
+		if (successAlert == generatedAlert) {
 			Orders order = ordersManager.findCartByAccountId(account.getAccountId());
 			if (order != null) {
 				model.addAttribute("order", order);
 				model.addAttribute("orderId", order.getOrderId());
-				Orders confirmOrder = ordersManager.findByStatusAndAccountId(OrderStatusUtilities.PENDING_PAYMENT.getStatus(),account.getAccountId());
+				Orders confirmOrder = ordersManager.findByStatusAndAccountId(
+						OrderStatusUtilities.PENDING_PAYMENT.getStatus(), account.getAccountId());
 				model.addAttribute("haveConfirmOrder", (confirmOrder != null));
 			}
 			model.addAttribute("orderList", new Orders());
 			return "MyCart";
 		} else {
+			model.addAttribute("alert",generatedAlert);
 			return "index";
 		}
-
 	}
 
 	@RequestMapping(value = "/confirmCart", method = RequestMethod.POST)
@@ -76,15 +74,17 @@ public class CartController {
 		long orderId = orders.getOrderId();
 
 		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = AlertMessage.CONFIRM_CART_SUCCESS;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.USER, account, successAlert);
 
-		if (account != null) {
+		if (successAlert == generatedAlert) {
 			for (OrderLine orderLine : orders.getListProduct()) {
 				int amount = orderLine.getAmount();
 				long productId = orderLine.getPk().getProduct().getProductId();
-				
+
 				orderLineManager.updateAmountByOrderIdAndProductId(amount, orderId, productId);
 				LOGGER.info("Order " + orderId + " : Update amount to " + amount + " on product id " + productId);
-				
+
 				Product product = productManager.findProductByProductId(productId);
 				product.setAmount(product.getAmount() - amount);
 				productManager.save(product);
@@ -92,31 +92,39 @@ public class CartController {
 			String status = OrderStatusUtilities.PENDING_PAYMENT.getStatus();
 			ordersManager.updateOrderStatusByOrderId(orderId, status);
 			LOGGER.info("Order ID {" + orderId + "} to " + status);
-			model.addAttribute("payment",new Payment());
+			model.addAttribute("payment", new Payment());
+			model.addAttribute("alert",generatedAlert);
 			return "ConfirmPayment";
 		}
-		return "redirect:index";
+		model.addAttribute("alert",generatedAlert);
+		return "index";
 	}
-
-
 
 	@RequestMapping(value = "/RemoveOutOfCart/{productId}", method = RequestMethod.GET)
 	public String doRemoveOutOfCart(@PathVariable("productId") int productId, HttpSession session, ModelMap model) {
 		LOGGER.info("Product id '" + productId + "' has requested to add to my cart");
 		Account account = SessionUtility.getAccount(session);
-		if (account != null) {
+		AlertMessage successAlert = AlertMessage.REMOVE_PRODUCT_OUTOFCART_SUCCESS;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.USER, account, successAlert);
+
+		if (successAlert == generatedAlert) {
 			Orders orders = ordersManager.findCartByAccountId(account.getAccountId());
 			ordersManager.removeOrderByOrderIdAndProductId(orders.getOrderId(), productId);
-			return "redirect:../myCart";
+			model.addAttribute("alert",generatedAlert);
+			return "../myCart";
 		}
-		return "redirect:../index";
+		model.addAttribute("alert",generatedAlert);
+		return "../index";
 	}
 
 	@RequestMapping(value = "/addToCart/{productId}", method = RequestMethod.GET)
 	public String doAddToCart(@PathVariable("productId") int productId, HttpSession session, ModelMap model) {
 		LOGGER.info("Product id '" + productId + "' has requested to add to my cart");
 		Account account = SessionUtility.getAccount(session);
-		if (account != null) {
+		AlertMessage successAlert = AlertMessage.ADD_PRODUCT_TOCART_SUCCESS;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.USER, account, successAlert);
+
+		if (successAlert == generatedAlert) {
 			Orders orders = ordersManager.findCartByAccountId(account.getAccountId());
 			Product product = productManager.findOne(((Integer) productId).longValue());
 			OrderLine orderLine = null;
@@ -138,10 +146,11 @@ public class CartController {
 			orderLineManager.save(orderLine);
 
 			model.addAttribute("orderList", orderLine);
-
-			return "redirect:../listProduct";
+			model.addAttribute("alert",generatedAlert);
+			return "../listProduct";
 		}
-		return "redirect:index.jsp";
+		model.addAttribute("alert",generatedAlert);
+		return "../index.jsp";
 
 	}
 }

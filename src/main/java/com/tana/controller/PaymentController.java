@@ -25,6 +25,7 @@ import com.tana.entities.Orders;
 import com.tana.entities.Payment;
 import com.tana.utilities.DateUtilities;
 import com.tana.utilities.FolderUtilities;
+import com.tana.utilities.IconUtility;
 import com.tana.utilities.OrderStatusUtilities;
 import com.tana.utilities.SessionUtility;
 import com.tana.utilities.VariableUtility;
@@ -40,6 +41,11 @@ public class PaymentController {
 	@Autowired
 	private OrdersRepository ordersManager;
 
+	@ModelAttribute("account")
+	public Account getAccount(){
+		return new Account();
+	}
+	
 	@RequestMapping(value = "/confirmPayment", method = RequestMethod.POST)
 	public String confirmCart(@ModelAttribute("payment") Payment payment, @RequestParam("date") String dateString,
 			@RequestParam("file") MultipartFile file, HttpSession session, ModelMap model) {
@@ -55,13 +61,13 @@ public class PaymentController {
 				return "redirect:index";
 			}
 			String fileName = null;
-			
+
 			FolderUtilities.createFolderIfNotExist(VariableUtility.IMG_PATH_PAYMENT);
-			
+
 			try {
 				// Get the file and save it somewhere
 				byte[] bytes = file.getBytes();
-				fileName = orderId + "_" + payment.getId()+"_"+file.getOriginalFilename();
+				fileName = orderId + "_" + payment.getId() + "_" + file.getOriginalFilename();
 				LOGGER.info("File name : " + fileName);
 				Path path = Paths.get(VariableUtility.IMG_PATH_PAYMENT + fileName);
 				Files.write(path, bytes);
@@ -73,11 +79,11 @@ public class PaymentController {
 			payment.setPaymentDate(date);
 			paymentManager.save(payment);
 			LOGGER.info("Payment saved : OrderID {" + orderId + "}  ,   Payment {" + payment.getId() + "}");
-			
+
 			order.setPayment(payment);
 			order.setStatus(OrderStatusUtilities.PENDING_VERIFICATION.getStatus());
 			ordersManager.save(order);
-			LOGGER.info("OrderID {" + orderId + "} updated status to : "+order.getStatus());
+			LOGGER.info("OrderID {" + orderId + "} updated status to : " + order.getStatus());
 		}
 		return "redirect:index";
 
@@ -91,12 +97,22 @@ public class PaymentController {
 		if (account != null) {
 			Orders order = ordersManager.findByStatusAndAccountId(OrderStatusUtilities.PENDING_PAYMENT.getStatus(),
 					account.getAccountId());
-			model.addAttribute("date", new Date());
-			model.addAttribute("payment", new Payment());
-			model.addAttribute("orderId", order.getOrderId());
-			return "ConfirmPayment";
+			if (order != null) {
+				model.addAttribute("date", new Date());
+				model.addAttribute("payment", new Payment());
+				model.addAttribute("orderId", order.getOrderId());
+				return "ConfirmPayment";
+			}else{
+				//TODO alert
+//				AlertMessage error = new AlertMessage(IconUtility.WARNING.getIcon(),IconUtility.WARNING.getStatus(),"คำเตือน","คุณยังไม่มีรายการชำระเงิน");
+//				model.addAttribute("alert",error);
+			}
+		}else{
+			//TODO alert
+//			AlertMessage error = new AlertMessage(IconUtility.DANGER.getIcon(),IconUtility.DANGER.getStatus(),"คุณไม่ได้เข้าสู่ระบบ","กรุณาเข้าสู่ระบบก่อนเข้าใช้งาน");
+//			model.addAttribute("alert",error);
 		}
-		return "redirect:index";
+		return "index";
 	}
 
 }

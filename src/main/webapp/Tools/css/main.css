@@ -141,6 +141,10 @@ span.label-danger h3 {
 	color: #a94442;
 }
 
+h3.center-content{
+	text-align:center;
+}
+
 @font-face {
 	font-family: defaultFont;
 	src: url("../fonts/Superspace Regular ver 1.00.ttf");

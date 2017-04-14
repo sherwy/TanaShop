@@ -8,6 +8,6 @@ import com.tana.entities.GeneralDetail;
 
 public interface GeneralDetailRepository extends JpaRepository<GeneralDetail,Long>{
 	
-	@Query(value="SELECT * FROM tana_shopping.general_shop_detail ORDER BY date_changed LIMIT 1",nativeQuery=true)
-	public GeneralDetail getLastest();
+	@Query(value="SELECT * FROM general_shop_detail ORDER BY id DESC LIMIT 1",nativeQuery=true)
+	GeneralDetail getLastest();
 }
