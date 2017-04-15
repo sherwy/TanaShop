@@ -1,5 +1,7 @@
 package com.tana.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -35,7 +37,11 @@ public class GeneralDetailREST {
 			detail.setShopName("Tana");
 			detail.setShopDetail("EverydayKPop shop");
 			detail.setShopDescription("Korean");
-			detail.setDateChanged(new Date());
+			try {
+				detail.setDateChanged(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z").parse(new Date().toString()));
+			} catch (ParseException e) {
+				detail.setDateChanged(null);
+			}
 			detail.setEmail("tanabodee.l@outlook.com");
 		}
 		return new ResponseEntity<>(detail,HttpStatus.OK);
