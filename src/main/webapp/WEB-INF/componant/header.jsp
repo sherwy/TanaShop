@@ -19,6 +19,7 @@
 %>
 <title><%=general.getShopName()%> :: ${param.title }</title>
 <script type="text/javascript" src="/Tools/js/jquery-3.2.1.js"></script>
+<script type="text/javascript" src="/Tools/js/materialize.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("body").css("display", "none");

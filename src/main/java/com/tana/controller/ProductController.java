@@ -122,11 +122,16 @@ public class ProductController {
 					Files.write(path, bytes);
 				}
 				productReturned.setImgUrl(imgUrlDB);
-				productManager.save(productReturned);
 				
+				productReturned = productManager.save(productReturned);
+				if(productReturned.getImgUrl() == null){
+					productManager.delete(productReturned.getProductId());
+					model.addAttribute("alert",AlertMessage.INVALID_PIC_FAIL);
+				}else{
+					model.addAttribute("alert", generatedAlert);
+				}
 				model.addAttribute("listCategory", categoryManager.findParentCategory());
 				model.addAttribute("listProdStatus", listProductStatus());
-				model.addAttribute("alert", generatedAlert);
 				return "AddProduct";
 			} catch (IOException e) {
 				e.printStackTrace();

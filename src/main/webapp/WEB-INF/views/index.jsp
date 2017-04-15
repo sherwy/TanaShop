@@ -6,51 +6,29 @@
 	pageEncoding="UTF-8"%>
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <div class="row">
-	<div class="card">
-		<img
-			src="/Images/Payment/19_0_10339955_943653878982273_6008338458767066866_n.jpg"
-			alt="Avatar">
-		<div class="card-content">
-			<h4>
-				<b>John Doe</b>
-			</h4>
-			<p>Architect & Engineer</p>
-		</div>
-	</div>
-	<div class="card">
-		<img
-			src="/Images/Payment/19_0_10339955_943653878982273_6008338458767066866_n.jpg"
-			alt="Avatar">
-		<div class="card-content">
-			<h4>
-				<b>John Doe</b>
-			</h4>
-			<p>Architect & Engineer</p>
-		</div>
-	</div>
-	<div class="card">
-		<img
-			src="/Images/Payment/19_0_10339955_943653878982273_6008338458767066866_n.jpg"
-			alt="Avatar">
-		<div class="card-content">
-			<h4>
-				<b>John Doe</b>
-			</h4>
-			<p>Architect & Engineer</p>
-		</div>
-	</div>
-	<div class="card">
-		<img
-			src="/Images/Payment/19_0_10339955_943653878982273_6008338458767066866_n.jpg"
-			alt="Avatar">
-		<div class="card-content">
-			<h4>
-				<b>John Doe</b>
-			</h4>
-			<p>Architect & Engineer</p>
-		</div>
-	</div>
+	<h1>
+		<b>สินค้าใหม่</b>
+	</h1>
+	<c:choose>
+		<c:when test="${listNewProd != null }">
+			<c:forEach items="${listNewProd }" var="newProd">
+				<div class="card">
+					<c:set var="newProdUrl" value="${fn:split(newProd.imgUrl, ',')}" />
+					<c:forEach items="${newProdUrl }" var="imgUrl">
+						<img src="/Images/Products/${newProd.productId }_${newProd.productName }/${imgUrl }" alt="Avatar">
+					</c:forEach>
+					<div class="card-content">
+						<h4>
+							<b>${newProd.productName }</b>
+						</h4>
+						<p>${newProd.productDetail }</p>
+					</div>
+				</div>
+			</c:forEach>
+		</c:when>
+	</c:choose>
+
 </div>
 <jsp:include page="../componant/footer.jsp" flush="true" />

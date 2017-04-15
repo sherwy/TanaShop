@@ -11,7 +11,7 @@ public class VariableUtility {
 	public static String IMG_PATH_PAYMENT = "/src/main/webapp/Images/Payment/";
 	
 	public static String getProductPathFile(String productId,String productName){
-		String path = getCurrentDir()+IMG_PATH_PRODUCTS+productId+"_"+productName+"/";
+		String path = getCurrentDir()+IMG_PATH_PRODUCTS+productId+"_"+productName.trim()+"/";
 		LOGGER.info("Get product path file : "+path);
 		return path;
 	}  

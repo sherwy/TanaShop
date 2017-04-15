@@ -14,6 +14,7 @@ public enum AlertMessage {
 	
 	// ADMIN ROLE
 	ADD_PROD_SUCCESS("เรียบร้อย !", "คุณได้ทำการเพิ่มสินค้าสำเร็จ", IconUtility.SUCCESS), 
+	INVALID_PIC_FAIL("ผิดพลาด","ไฟล์รูปที่เลือกมีปัญหา กรุณาเปลี่ยนชื่อไฟล์และลองอีกครั้ง",IconUtility.DANGER),
 	EDIT_PROD_SUCCESS("สำเร็จ","คุณได้ทำการแก้ไขข้อมูลสินค้าสำเร็จ",IconUtility.SUCCESS),
 	ADD_CATEGORY_SUCCESS("เรียบร้อย !", "คุณได้ทำการเพิ่มประเภทสินค้าสำเร็จ", IconUtility.SUCCESS), 
 	EDIT_WELCOME_SUCCESS("สำเร็จ","คุณได้ทำการแก้ไขข้อความต้อนรับสำเร็จ", IconUtility.SUCCESS), 
