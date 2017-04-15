@@ -2,29 +2,37 @@
 <jsp:include page="../componant/header.jsp" flush="true">
 	<jsp:param name="title" value="Add Category" />
 </jsp:include>
-<script language="JavaScript" type="text/javascript"
+<script type="text/javascript"
 	src="/Tools/cbrte/html2xhtml.min.js"></script>
-<script language="JavaScript" type="text/javascript"
+<script type="text/javascript"
 	src="/Tools/cbrte/richtext.js"></script>
 <%@ page language="java" contentType="text/html; charset=TIS-620"
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-
-<b>Add Category</b>
+<b>เพิ่มหมวดหมู่สินค้า</b>
 <br>
 <div class="form-group">
 	<form:form action="/addCategory" method="POST"
 		modelAttribute="category" enctype="multipart/form-data">
-		<table class="table table-bordered">
-			<tr>
-				<td><form:label path="categoryName">ชื่อหมวดหมู่</form:label></td>
-				<td><form:input path="categoryName" class="form-control" /></td>
-			</tr>
-			<tr>
-				<td><form:label path="parentCategory">หมวดหมู่หลัก</form:label></td>
-				<td><form:select path="parentCategory" class="form-control">
+
+		<div class="form-sher">
+			<div class="row">
+				<div class="col-md-2 header-sher">
+					<form:label path="categoryName">ชื่อหมวดหมู่</form:label>
+				</div>
+				<div class="col-md-6">
+					<form:input path="categoryName" class="form-control" />
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2 header-sher">
+					<form:label path="parentCategory">หมวดหมู่หลัก</form:label>
+				</div>
+				<div class="col-md-3">
+					<form:select path="parentCategory" class="form-control">
 						<form:option value="">-- ไม่มีหมวดหมู่หลัก --</form:option>
 						<c:choose>
 							<c:when test="${listCategory != null }">
@@ -33,27 +41,29 @@
 								</c:forEach>
 							</c:when>
 						</c:choose>
-					</form:select></td>
-			</tr>
-			<tr>
-				<td><label >รายละเอียดหมวดหมู่</label></td>
-				<td><script language="JavaScript" type="text/javascript">
-				
-					function submitForm() {
-						updateRTEs();
-					}
+					</form:select>
+				</div>
+			</div>
 
-					//Usage: initRTE(imagesPath, includesPath, cssFile, genXHTML, encHTML)
-					initRTE("/Tools/cbrte/images/", "/Tools/cbrte/", "", true);
-				
-				</script>
+			<div class="row">
+				<div class="col-md-2 header-sher">
+					<label>รายละเอียดหมวดหมู่</label>
+				</div>
+				<div class="col-md-10">
+					<script type="text/javascript">
+						function submitForm() {
+							updateRTEs();
+						}
+
+						initRTE("/Tools/cbrte/images/", "/Tools/cbrte/", "",
+								true);
+					</script>
 					<noscript>
 						<p>
 							<b>Javascript must be enabled to use this form.</b>
 						</p>
-					</noscript> <script language="JavaScript" type="text/javascript">
-					
-						//build new richTextEditor
+					</noscript>
+					<script  type="text/javascript">
 						var rte1 = new richTextEditor('categoryDetail');
 						rte1.html = '';
 
@@ -101,14 +111,19 @@
 						//rte1.toggleSrc = false;
 
 						rte1.build();
-					
-					</script></td>
-			</tr>
-			<tr>
-				<td colspan="2"><input class="btn btn-success" type="submit"
-					value="Add Category" onClick="submitForm()"/></td>
-			</tr>
-		</table>
+					</script>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+						<input class="btn btn-success" type="submit" value="Add Category"
+							onClick="submitForm()" />
+					</div>
+				</div>
+
+			</div>
+		</div>
+
 	</form:form>
 </div>
 <jsp:include page="../componant/footer.jsp" flush="true" />

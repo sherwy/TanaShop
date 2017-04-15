@@ -23,11 +23,12 @@ import com.tana.Repositories.PaymentRepository;
 import com.tana.entities.Account;
 import com.tana.entities.Orders;
 import com.tana.entities.Payment;
+import com.tana.utilities.AlertMessage;
 import com.tana.utilities.DateUtilities;
 import com.tana.utilities.FolderUtilities;
-import com.tana.utilities.IconUtility;
 import com.tana.utilities.OrderStatusUtilities;
 import com.tana.utilities.SessionUtility;
+import com.tana.utilities.UserRole;
 import com.tana.utilities.VariableUtility;
 
 @Controller
@@ -42,30 +43,28 @@ public class PaymentController {
 	private OrdersRepository ordersManager;
 
 	@ModelAttribute("account")
-	public Account getAccount(){
+	public Account getAccount() {
 		return new Account();
 	}
-	
+
 	@RequestMapping(value = "/confirmPayment", method = RequestMethod.POST)
 	public String confirmCart(@ModelAttribute("payment") Payment payment, @RequestParam("date") String dateString,
 			@RequestParam("file") MultipartFile file, HttpSession session, ModelMap model) {
 		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = AlertMessage.CONFIRM_PAYMENT_SUCCESS;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.USER, account, successAlert);
 
-		if (account != null) {
+		if (successAlert == generatedAlert) {
 			Orders order = ordersManager.findByStatusAndAccountId(OrderStatusUtilities.PENDING_PAYMENT.getStatus(),
 					account.getAccountId());
 			long orderId = order.getOrderId();
 			LOGGER.info("Found order id : " + order.getOrderId());
-			if (file.isEmpty()) {
-				LOGGER.info("File is empty");
-				return "redirect:index";
-			}
+
 			String fileName = null;
 
 			FolderUtilities.createFolderIfNotExist(VariableUtility.IMG_PATH_PAYMENT);
 
 			try {
-				// Get the file and save it somewhere
 				byte[] bytes = file.getBytes();
 				fileName = orderId + "_" + payment.getId() + "_" + file.getOriginalFilename();
 				LOGGER.info("File name : " + fileName);
@@ -85,16 +84,18 @@ public class PaymentController {
 			ordersManager.save(order);
 			LOGGER.info("OrderID {" + orderId + "} updated status to : " + order.getStatus());
 		}
-		return "redirect:index";
-
+		model.addAttribute("alert", generatedAlert);
+		return "index";
 	}
 
 	@RequestMapping(value = "/confirmPayment", method = RequestMethod.GET)
 	public String confirmCart(HttpSession session, ModelMap model) {
 
 		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = null;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.USER, account, successAlert);
 
-		if (account != null) {
+		if (successAlert == generatedAlert) {
 			Orders order = ordersManager.findByStatusAndAccountId(OrderStatusUtilities.PENDING_PAYMENT.getStatus(),
 					account.getAccountId());
 			if (order != null) {
@@ -102,15 +103,13 @@ public class PaymentController {
 				model.addAttribute("payment", new Payment());
 				model.addAttribute("orderId", order.getOrderId());
 				return "ConfirmPayment";
-			}else{
-				//TODO alert
-//				AlertMessage error = new AlertMessage(IconUtility.WARNING.getIcon(),IconUtility.WARNING.getStatus(),"คำเตือน","คุณยังไม่มีรายการชำระเงิน");
-//				model.addAttribute("alert",error);
+			} else {
+				AlertMessage alert = AlertMessage.NO_PAYMENT_ORDER_WARNING;
+				model.addAttribute("alert", alert);
+				return "index";
 			}
 		}else{
-			//TODO alert
-//			AlertMessage error = new AlertMessage(IconUtility.DANGER.getIcon(),IconUtility.DANGER.getStatus(),"คุณไม่ได้เข้าสู่ระบบ","กรุณาเข้าสู่ระบบก่อนเข้าใช้งาน");
-//			model.addAttribute("alert",error);
+			model.addAttribute("alert",generatedAlert);
 		}
 		return "index";
 	}

@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.tana.Repositories.AccountRepository;
 import com.tana.entities.Account;
-import com.tana.utilities.IconUtility;
+import com.tana.utilities.AlertMessage;
+import com.tana.utilities.SessionUtility;
 
 @Controller
 public class LoginController {
@@ -35,7 +36,7 @@ public class LoginController {
 	public String goToLogin(Model model) {
 		LOGGER.info("Redirect to login page");
 		model.addAttribute("user", new Account());
-		return "redirect:index";
+		return "index";
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -46,19 +47,26 @@ public class LoginController {
 			if (account.getPassword().equals(accountLogin.getPassword())) {
 				LOGGER.info("Logging in as '" + account.getUsername() + "' successfully");
 				session.setAttribute("user", account);
-				return "redirect:index";
+				model.addAttribute("alert",AlertMessage.LOGIN_SUCCESS);
+				return "index";
 			}
 		}
-		//TODO alert
-//		AlertMessage error = new AlertMessage(IconUtility.DANGER.getIcon(),IconUtility.DANGER.getStatus(),"ผิดพลาด","ชื่อผู้ใช้/รหัสผ่านผิดพลาด");
-//		model.addAttribute("loginErrorMsg",error);
+		model.addAttribute("loginErrorMsg",AlertMessage.LOGIN_FAIL);
 		return "index";
 	}
 
 	@RequestMapping(value = "/logout")
 	public String doLogout(HttpSession session, ModelMap model) {
-		session.removeAttribute("user");
-		return "redirect:index";
+		Account account = SessionUtility.getAccount(session);
+		AlertMessage alert = null;
+		if (account != null) {
+			session.removeAttribute("user");
+			alert = AlertMessage.LOGOUT_SUCCESS;
+		}else{
+			alert = AlertMessage.ANONYMOUS_USER;
+		}
+		model.addAttribute("alert",alert);
+		return "index";
 	}
 
 }

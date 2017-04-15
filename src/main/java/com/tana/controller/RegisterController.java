@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,9 +22,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.tana.Repositories.AccountRepository;
 import com.tana.entities.Account;
+import com.tana.utilities.AlertMessage;
 import com.tana.utilities.DateUtilities;
 import com.tana.utilities.FolderUtilities;
 import com.tana.utilities.IconUtility;
+import com.tana.utilities.SessionUtility;
 import com.tana.utilities.UserRole;
 import com.tana.utilities.VariableUtility;
 
@@ -40,21 +44,28 @@ public class RegisterController {
 	}
 
 	@GetMapping("/regis")
-	public String goToResult(Model model) {
+	public String goToResult(HttpSession session, Model model) {
 		LOGGER.info("Redirect to result page");
-		model.addAttribute("account1",new Account());
+		Account account = SessionUtility.getAccount(session);
+		if(account != null){
+			model.addAttribute("alert",AlertMessage.REQUIRED_LOGOUT);
+			return "index";
+		}
+		model.addAttribute("account1", new Account());
 		return "Register";
 	}
 
 	@RequestMapping(value = "/addRegister", method = RequestMethod.POST)
 	public String addRegister(@ModelAttribute("SpringWeb") Account account, @RequestParam("file") MultipartFile file,
-			@RequestParam("date") String dateString, ModelMap model) {
+			@RequestParam("date") String dateString,HttpSession session, ModelMap model) {
 		LOGGER.info("Username : " + account.getUsername());
-
-		if (file.isEmpty()) {
-			LOGGER.info("File is empty");
-			return "redirect:index";
+		
+		Account accountLogin = SessionUtility.getAccount(session);
+		if(accountLogin != null){
+			model.addAttribute("alert",AlertMessage.REQUIRED_LOGOUT);
+			return "index";
 		}
+
 		Date date = DateUtilities.convertStringToDateWithFormat(dateString, "yyyy-MM-dd");
 		account.setBirthDate(date);
 		account.setRole(UserRole.USER.getRole());
@@ -77,6 +88,7 @@ public class RegisterController {
 
 		accountReturned.setImgUrl(fileName);
 		accountRepository.save(accountReturned);
+		model.addAttribute("alert",AlertMessage.REGISTER_SUCCESS);
 		return "index";
 	}
 }

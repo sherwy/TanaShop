@@ -11,6 +11,50 @@ body .container {
 	font-size: 120%;
 }
 
+.card {
+	float: left;
+	width: 200px;
+	height: auto;
+	margin-right: 10px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+	transition: 0.3s;
+	width: 200px;
+}
+
+.card:hover {
+}
+
+.card>img {
+	width: 100%;
+}
+
+.card .card-content {
+	padding: 10px;
+}
+
+.card:hover {
+	box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+	top: -300px;
+	transition: 0.3s;
+	transform: rotate(2deg);
+}
+
+.form-sher>div.row {
+	margin-bottom: 10px;
+}
+
+.alert {
+	transition: .5s ease;
+}
+
+.form-sher .header-sher {
+	text-align: right;
+}
+
+.content-body {
+	padding: 15px;
+}
+
 .menuNavBlock li.menuNav:hover {
 	background: #b00202;
 	color: #FFFFFF;
@@ -43,20 +87,31 @@ body .container {
 	.menuNavBlock-inside li.menuNav-inside a:hover {
 		color: #FFFFFF;
 	}
-	.menuNavBlock-admin li.menuNav-admin:hover .menuNavBlock-inside li.menuNav-inside{
+	.menuNavBlock-admin li.menuNav-admin:hover .menuNavBlock-inside li.menuNav-inside
+		{
 		background: #eee;
 		transition: .5s;
 	}
-	
-	.menuNavBlock-admin li.menuNav-admin .menuNavBlock-inside li.menuNav-inside:hover{
+	.menuNavBlock-admin li.menuNav-admin .menuNavBlock-inside li.menuNav-inside:hover
+		{
 		background: #242666;
-		color:#FFFFFF;
+		color: #FFFFFF;
 		transition: .5s;
 	}
-	
-	.menuNavBlock-admin li.menuNav-admin .menuNavBlock-inside li.menuNav-inside:hover a{
-		color:#FFFFFF;
+	.menuNavBlock-admin li.menuNav-admin .menuNavBlock-inside li.menuNav-inside:hover a
+		{
+		color: #FFFFFF;
 		transition: .5s;
+	}
+	.form-sher .header-sher {
+		text-align: left;
+	}
+	.card {
+		width: 100%;
+		height: auto;
+		margin-bottom: 20px; box-shadow : 0 4px 8px 0 rgba( 0, 0, 0, 0.2);
+		transition: 0.3s;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 	}
 }
 
@@ -141,8 +196,8 @@ span.label-danger h3 {
 	color: #a94442;
 }
 
-h3.center-content{
-	text-align:center;
+h3.center-content {
+	text-align: center;
 }
 
 @font-face {

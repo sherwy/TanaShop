@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.tana.Repositories.CategoryRepository;
 import com.tana.entities.Account;
 import com.tana.entities.OrderCategory;
+import com.tana.utilities.AlertMessage;
 import com.tana.utilities.SessionUtility;
+import com.tana.utilities.UserRole;
 
 @Controller
 public class CategoryController {
@@ -34,14 +36,18 @@ public class CategoryController {
 	@RequestMapping(value = "/addCategory", method = RequestMethod.GET)
 	public String doAddCategory(HttpSession session, Model model) {
 		Account account = SessionUtility.getAccount(session);
-		if (account != null) {
+		AlertMessage successAlert = null;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+		
+		if(successAlert == generatedAlert){
 			List<OrderCategory> listCategory = categoryManager.findParentCategory();
 			model.addAttribute("listCategory", listCategory);
 			model.addAttribute("category", new OrderCategory());
 			return "AddCategory";
-		} else {
-			return "redirect:index";
 		}
+		model.addAttribute("alert",generatedAlert);
+		return "index";
+		
 	}
 
 	@RequestMapping(value = "/addCategory", method = RequestMethod.POST)
@@ -49,12 +55,16 @@ public class CategoryController {
 		
 		Account account = SessionUtility.getAccount(session);
 		LOGGER.info("Category : "+category.getCategoryName());
-		if (account != null) {
+		AlertMessage successAlert = AlertMessage.ADD_CATEGORY_SUCCESS;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+		
+		if(successAlert == generatedAlert){
 			LOGGER.info("Detail : "+categoryDetail);
 			category.setCategoryDetail(categoryDetail);
 			categoryManager.save(category);
 		}
-		return "redirect:index";
+		model.addAttribute("alert",generatedAlert);
+		return "index";
 
 	}
 }

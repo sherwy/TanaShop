@@ -7,6 +7,8 @@
 <link href="/Tools/css/bootstrap.css" rel="stylesheet">
 <link href="/Tools/css/main.css" rel="stylesheet">
 <link rel="shortcut icon" href="../favicon.ico">
+<link rel="stylesheet" type="text/css"
+	href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
 <%@page import="com.google.gson.Gson"%>
 <%
 	String generalDetailJson = JsonReader.readUrl("http://localhost:8081/rest/generalDetailShop");
@@ -16,9 +18,7 @@
 	WelcomeDetail welcome = gson.fromJson(welcomeDetailJson, WelcomeDetail.class);
 %>
 <title><%=general.getShopName()%> :: ${param.title }</title>
-
-<script type="text/javascript"
-	src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/Tools/js/jquery-3.2.1.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("body").css("display", "none");
@@ -197,15 +197,19 @@
 									<tr>
 										<td colspan="2"><c:choose>
 												<c:when test="${loginErrorMsg != null }">
-													<div class="alert alert-${loginErrorMsg.status }">
+													<div class="alert alert-${loginErrorMsg.icon.status }">
+														<button type="button" class="close" data-dismiss="alert"
+															aria-label="Close">
+															<span aria-hidden="true">»Ô´</span>
+														</button>
 														<strong>
-															<h3>
-																<span class="${loginErrorMsg.icon }"> </span>
-																${loginErrorMsg.header }
+															<h3 class="center-content">
+																<span class="${loginErrorMsg.icon.icon }"> </span>
+																${loginErrorMsg.alertTitle }
 															</h3>
 														</strong>
 
-														<p class="error-text">${loginErrorMsg.text }</p>
+														<p class="error-text">${loginErrorMsg.alertDetail }</p>
 													</div>
 												</c:when>
 											</c:choose></td>
@@ -283,11 +287,16 @@
 			</div>
 
 			<!-- content -->
-			<div class="col-md-9">
+			<div class="col-md-9 content-body">
 
 				<c:choose>
 					<c:when test="${alert != null }">
 						<div class="alert alert-${alert.icon.status }">
+
+							<button type="button" class="close" data-dismiss="alert"
+								aria-label="Close">
+								<span aria-hidden="true">»Ô´</span>
+							</button>
 							<strong>
 								<h3 class="center-content">
 									<span class="${alert.icon.icon }"> </span> ${alert.alertTitle }

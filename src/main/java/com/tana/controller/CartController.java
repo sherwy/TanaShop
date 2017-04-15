@@ -150,7 +150,6 @@ public class CartController {
 			return "../listProduct";
 		}
 		model.addAttribute("alert",generatedAlert);
-		return "../index.jsp";
-
+		return "../index";
 	}
 }

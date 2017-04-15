@@ -2,7 +2,9 @@ package com.tana.utilities;
 
 public enum ProductStatusUtilities {
 	
-	AVAILABLE("Available"),DELETED("Deleted");
+	NEW_PROD("สินค้าใหม่"),
+	RECOMMENDED_PROD("สินค้าแนะนำ"),
+	DELETED("Deleted");
 	
 	private String status;
 

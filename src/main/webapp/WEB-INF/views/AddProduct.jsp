@@ -4,17 +4,18 @@
 </jsp:include>
 <%@ page language="java" contentType="text/html; charset=TIS-620"
 	pageEncoding="UTF-8"%>
-<script language="JavaScript" type="text/javascript"
+<script type="text/javascript"
 	src="/Tools/cbrte/html2xhtml.min.js"></script>
-<script language="JavaScript" type="text/javascript"
+<script type="text/javascript"
 	src="/Tools/cbrte/richtext.js"></script>
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <b>เพิ่มสินค้า</b>
 <br>
 <div class="form-group">
-	<script language="JavaScript">
+	<script >
 		initRTE("/Tools/cbrte/images/", "/Tools/cbrte/", "", true);
 		function validateAddProd(frm) {
 			updateRTEs();
@@ -75,19 +76,90 @@
 
 	<form:form action="/addProduct" method="POST" modelAttribute="product"
 		enctype="multipart/form-data">
-		<table class="table table-bordered">
-			<tr>
-				<td><form:label path="productName">ชื่อสินค้า</form:label></td>
-				<td><form:input path="productName" class="form-control" /></td>
-			</tr>
-			<tr>
-				<td><form:label path="productDetail">รายละเอียดสินค้า</form:label></td>
-				<td>
+		<div class="form-sher">
+			<div class="row">
+				<div class="col-md-2 header-sher">
+					<form:label path="category">หมวดหมู่สินค้า</form:label>
+				</div>
+				<div class="col-md-3">
+					<form:select path="category" class="form-control">
+						<c:choose>
+							<c:when test="${listCategory != null }">
+								<c:forEach items="${listCategory }" var="category">
+									<option value="${category.categoryId }">${category.categoryName }</option>
+									<c:forEach items="${category.listChildCategory }"
+										var="categoryChild">
+										<option value="${categoryChild.categoryId }">&nbsp;
+											-${categoryChild.categoryName }</option>
+									</c:forEach>
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								<option value="null">ไม่มีหมวดหมู่</option>
+							</c:otherwise>
+						</c:choose>
+					</form:select>
+				</div>
+				<div class="col-md-2 header-sher">
+					<form:label path="status">สถานะสินค้า</form:label>
+				</div>
+				<div class="col-md-3">
+					<form:select path="status" class="form-control">
+						<c:choose>
+							<c:when test="${listProdStatus != null }">
+								<c:forEach items="${listProdStatus }" var="prodStatus">
+									<option value="${prodStatus.status }">${prodStatus.status }</option>
+								</c:forEach>
+							</c:when>
+						</c:choose>
+					</form:select>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2 header-sher">
+					<form:label path="productName">ชื่อสินค้า</form:label>
+				</div>
+				<div class="col-md-6">
+					<form:input path="productName" class="form-control" />
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2 header-sher">
+					<form:label path="price">ราคาสินค้าต่อหน่วย</form:label>
+				</div>
+				<div class="col-md-3">
+					<div class="input-group">
+						<form:input path="price" class="form-control" />
+						<span class="input-group-addon">บาท/ชิ้น</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2 header-sher">
+					<form:label path="amount">จำนวนสินค้า</form:label>
+				</div>
+				<div class="col-md-3">
+					<div class="input-group">
+						<form:input path="amount" class="form-control" />
+						<span class="input-group-addon">ชิ้น</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-2 header-sher">
+					<form:label path="productDetail">รายละเอียดสินค้า</form:label>
+				</div>
+				<div class="col-md-10">
 					<noscript>
 						<p>
 							<b>Javascript must be enabled to use this form.</b>
 						</p>
-					</noscript> <script language="JavaScript" type="text/javascript">
+					</noscript>
+					<script  type="text/javascript">
 						//build new richTextEditor
 						var rte1 = new richTextEditor('productDetailText');
 						rte1.html = '';
@@ -136,59 +208,31 @@
 						//rte1.toggleSrc = false;
 
 						rte1.build();
-					</script> <form:hidden path="productDetail" />
-				</td>
-			</tr>
-			<tr>
-				<td><form:label path="price">ราคาสินค้าต่อหน่วย</form:label></td>
-				<td><form:input path="price" class="form-control" /></td>
-			</tr>
-			<tr>
-				<td><form:label path="amount">จำนวนสินค้า</form:label></td>
-				<td><form:input path="amount" class="form-control" /></td>
-			</tr>
-			<tr>
-				<td><form:label path="imgUrl">รูปภาพสินค้า</form:label></td>
-				<td><input name="file" type="file" class="form-control"
-					multiple /> <form:hidden path="imgUrl" value="" /></td>
-			</tr>
-			<tr>
-				<td><form:label path="category">หมวดหมู่สินค้า</form:label></td>
-				<td><form:select path="category" class="form-control">
-						<c:choose>
-							<c:when test="${listCategory != null }">
-								<c:forEach items="${listCategory }" var="category">
-									<option value="${category.categoryId }">${category.categoryName }</option>
-									<c:forEach items="${category.listChildCategory }"
-										var="categoryChild">
-										<option value="${categoryChild.categoryId }">&nbsp;
-											-${categoryChild.categoryName }</option>
-									</c:forEach>
-								</c:forEach>
-							</c:when>
-							<c:otherwise>
-								<option value="null">ไม่มีหมวดหมู่</option>
-							</c:otherwise>
-						</c:choose>
+					</script>
+					<form:hidden path="productDetail" />
+				</div>
 
-					</form:select></td>
-			</tr>
 
-			<tr>
-				<td colspan="2">
-					<div class="row">
-						<div class="col-md-4"></div>
-						<div class="col-md-4">
-							<p class="text-center">
-								<input class="btn btn-success" type="submit"
-									onclick="return validateAddProd(product)" value="Add Product" />
-							</p>
-						</div>
-						<div class="col-md-4"></div>
+				<div class="row">
+					<div class="col-md-2 header-sher">
+						<form:label path="imgUrl">รูปภาพสินค้า</form:label>
 					</div>
-				</td>
-			</tr>
-		</table>
+					<div class="col-md-3">
+						<input name="file" type="file" class="form-control" multiple />
+						<form:hidden path="imgUrl" value="" />
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+						<p class="text-center">
+							<input class="btn btn-success" type="submit"
+								onclick="return validateAddProd(product)" value="Add Product" />
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
 	</form:form>
 </div>
 <jsp:include page="../componant/footer.jsp" flush="true" />
