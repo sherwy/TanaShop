@@ -123,6 +123,11 @@ public class ProductController {
 				}
 				productReturned.setImgUrl(imgUrlDB);
 				productManager.save(productReturned);
+				
+				model.addAttribute("listCategory", categoryManager.findParentCategory());
+				model.addAttribute("listProdStatus", listProductStatus());
+				model.addAttribute("alert", generatedAlert);
+				return "AddProduct";
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

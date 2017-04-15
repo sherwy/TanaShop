@@ -24,6 +24,10 @@ body .container {
 .card:hover {
 }
 
+#cp{
+	left:500px;
+	top:300px;
+}
 .card>img {
 	width: 100%;
 }
