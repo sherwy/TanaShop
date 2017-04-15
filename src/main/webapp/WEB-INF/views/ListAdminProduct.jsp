@@ -5,6 +5,12 @@
 <%@ page language="java" contentType="text/html; charset=TIS-620"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script>
+	function confirmation(){
+		var isConfirm = confirm("คุณต้องการลบสินค้าใช่ไหม ?");
+		return isConfirm;
+	}
+</script>
 <c:choose>
 	<c:when test="${listAdminProduct!=null}">
 		<table class="table table-striped">
@@ -32,7 +38,7 @@
 								class="btn btn-warning" role="button">Edit</a></td>
 							<td><a
 								href="<c:url value='/deleteProduct/${product.productId }' />"
-								class="btn btn-danger" role="button">Delete</a></td>
+								class="btn btn-danger" onclick="return confirmation()" role="button">Delete</a></td>
 						</tr>
 					</c:when>
 				</c:choose>

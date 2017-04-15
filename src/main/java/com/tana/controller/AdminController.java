@@ -89,7 +89,7 @@ public class AdminController {
 				productManager.delete(product);
 			}
 			model.addAttribute("alert", successAlert);
-			return "../listAdminProduct";
+			return "redirect:/listAdminProduct";
 		}
 		model.addAttribute("alert", generatedAlert);
 		return "../index";
