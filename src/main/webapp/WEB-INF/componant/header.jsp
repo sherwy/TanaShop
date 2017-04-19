@@ -97,7 +97,7 @@
 		<%@ page import="com.tana.utilities.*"%>
 		<%
 			Account user = (Account) session.getAttribute("user");
-			String isAdminView = (String)session.getAttribute(SessionUtility.isAdminView);
+			String isAdminView = (String) session.getAttribute(SessionUtility.isAdminView);
 			System.out.print(isAdminView);
 		%>
 
@@ -107,8 +107,9 @@
 		%>
 		<div class="row adminView">
 			<div class="content">
-				<a href="/requestUserView" class="btn warning success" role="button">มุมมองลูกค้า <span
-					class="glyphicon glyphicon-record"></span></a>
+				<a href="/requestUserView" class="btn warning success" role="button">มุมมองลูกค้า
+					<span class="glyphicon glyphicon-record"></span>
+				</a>
 			</div>
 		</div>
 		<%
@@ -116,8 +117,8 @@
 		%>
 		<div class="row adminView">
 			<div class="content">
-				คุณกำลังอยู่ในมุมมองลูกค้า 
-				<a href="/backToAdminRole" class="btn warning fail" role="button">ออกจากมุมมองลูกค้า <span
+				คุณกำลังอยู่ในมุมมองลูกค้า <a href="/backToAdminRole"
+					class="btn warning fail" role="button">ออกจากมุมมองลูกค้า <span
 					class="glyphicon glyphicon-remove-circle"></span></a>
 			</div>
 		</div>
@@ -159,7 +160,7 @@
 						<li class="menuNav"><a href="/index">หน้าแรก</a></li>
 						<li class="menuNav"><a href="/howTo">วิธีการสั่งซื้อ</a></li>
 						<li class="menuNav"><a href="/aboutUs">เกี่ยวกับเรา</a></li>
-						<li class="menuNav"><a href="#">ติดต่อเรา</a></li>
+
 						<%
 							} else if (user != null && user.getRole().equals(UserRole.USER.getRole())) {
 						%>
@@ -169,7 +170,7 @@
 						<li class="menuNav"><a href="/myCart">ตะกร้าสินค้า</a></li>
 						<li class="menuNav"><a href="/confirmPayment">แจ้งการชำระเงิน</a></li>
 						<li class="menuNav"><a href="/aboutUs">เกี่ยวกับเรา</a></li>
-						<li class="menuNav"><a href="#">ติดต่อเรา</a></li>
+						<li class="menuNav"><a href="/contactUs">ติดต่อเรา</a></li>
 
 						<%
 							}
@@ -238,7 +239,7 @@
 							aria-expanded="false">จัดการลูกค้า <span class="caret"></span>
 						</a>
 							<ul class="menuNavBlock-inside dropdown-menu">
-								<li class="menuNav-inside"><a href="#">รายการติดต่อจากลูกค้า</a></li>
+								<li class="menuNav-inside"><a href="/replyContact">รายการติดต่อจากลูกค้า</a></li>
 								<li class="menuNav-inside"><a href="/listUser">รายชื่อลูกค้า</a></li>
 							</ul></li>
 						</li>

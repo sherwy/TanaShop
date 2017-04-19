@@ -16,9 +16,14 @@
 %>
 <div class="row footerBlock">
 	<div class="col-md-3"></div>
-	<div class="col-md-3"><b>ติดต่อ Tel : </b><%= general.getShopTelephone() %></div>
-	<div class="col-md-3"><b>Email : </b><%= general.getEmail() %></div>
-	<div class="col-md-3"><a href="https://twitter.com/meraincat"><img src="/Images/icon/twitter.png" width="100px"/></a></div>
+	<div class="col-md-3">
+		<b>ติดต่อ Tel : </b><%=general.getShopTelephone()%></div>
+	<div class="col-md-3">
+		<b>Email : </b><%=general.getEmail()%></div>
+	<div class="col-md-3">
+		<a href="https://twitter.com/meraincat"><img
+			src="/Images/icon/twitter.png" width="100px" /></a>
+	</div>
 </div>
 <div class="col-md-3"></div>
 <div class="row footerBlock">
@@ -32,8 +37,8 @@
 				<li class="menuNav"><a href="/index">หน้าแรก</a></li>
 				<li class="menuNav"><a href="/howTo">วิธีการสั่งซื้อ</a></li>
 				<li class="menuNav"><a href="/aboutUs">เกี่ยวกับเรา</a></li>
-				<li class="menuNav"><a href="#">ติดต่อเรา</a></li>
 				<%
+					
 					} else if (user != null && user.getRole().equals(UserRole.USER.getRole())) {
 				%>
 
@@ -42,7 +47,7 @@
 				<li class="menuNav"><a href="/myCart">ตะกร้าสินค้า</a></li>
 				<li class="menuNav"><a href="/confirmPayment">แจ้งการชำระเงิน</a></li>
 				<li class="menuNav"><a href="/aboutUs">เกี่ยวกับเรา</a></li>
-				<li class="menuNav"><a href="#">ติดต่อเรา</a></li>
+				<li class="menuNav"><a href="/contactUs">ติดต่อเรา</a></li>
 
 				<%
 					}

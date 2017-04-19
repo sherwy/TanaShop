@@ -1,5 +1,6 @@
 package com.tana.controller;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -19,13 +20,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.tana.Repositories.BankAccountRepository;
+import com.tana.Repositories.ContactRepository;
 import com.tana.Repositories.DeliveryRepository;
 import com.tana.Repositories.OrdersRepository;
+import com.tana.Repositories.ReplyMsgRepository;
 import com.tana.entities.Account;
 import com.tana.entities.BankAccount;
+import com.tana.entities.ContactMessage;
 import com.tana.entities.Delivery;
 import com.tana.entities.Orders;
 import com.tana.entities.Product;
+import com.tana.entities.ReplyMessage;
 import com.tana.utilities.AlertMessage;
 import com.tana.utilities.Bank;
 import com.tana.utilities.BankType;
@@ -47,6 +52,12 @@ public class AdminController extends HeaderController {
 
 	@Autowired
 	private DeliveryRepository deliveryManager;
+	
+	@Autowired
+	ContactRepository contactManager;
+	
+	@Autowired
+	ReplyMsgRepository replyManager;
 
 	@RequestMapping(value = "/requestUserView", method = RequestMethod.GET)
 	public String requestUserView(HttpSession session, Model model) {
@@ -338,5 +349,45 @@ public class AdminController extends HeaderController {
 		}
 		session.setAttribute("alert", generatedAlert);
 		return "../index";
+	}
+	
+	@RequestMapping(value = "/replyContact", method = RequestMethod.GET)
+	public String replyContact(HttpSession session, Model model) {
+
+		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = null;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+
+		if (successAlert == generatedAlert) {
+			List<ContactMessage> listMsg = contactManager.findAll();
+			List<ContactMessage> listNonReplyMsg = contactManager.findMsgThatDidntReply();
+			model.addAttribute("listMsg",listMsg);
+			model.addAttribute("listNonReplyMsg",listNonReplyMsg);
+			model.addAttribute("reply", new ReplyMessage());
+			return "ReplyContact";
+		}
+		session.setAttribute("alert", generatedAlert);
+		return "index";
+	}
+	
+	@RequestMapping(value = "/replyContact", method = RequestMethod.POST)
+	public String replyContact(@ModelAttribute ReplyMessage reply,HttpServletRequest request,HttpSession session, Model model) {
+
+		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = AlertMessage.REPLY_CONTACT_SUCCESS;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+
+		if (successAlert == generatedAlert) {
+			ContactMessage contact = contactManager.findById(reply.getIssueMsg().getId());
+			reply.setDatetime(new Timestamp(System.currentTimeMillis()));
+			reply.setMsgOwner(account);
+			replyManager.save(reply);
+			contact.setReplyMsg(reply);
+			contactManager.save(contact);
+			session.setAttribute("alert", generatedAlert);
+			return "redirect:"+SessionUtility.getPreviousPage(request);
+		}
+		session.setAttribute("alert", generatedAlert);
+		return "index";
 	}
 }

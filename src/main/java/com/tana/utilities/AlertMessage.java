@@ -33,7 +33,8 @@ public enum AlertMessage {
 	EDIT_BANK_SUCCESS("สำเร็จ","คุณได้ทำการแก้ไขบัญชีธนาคารสำเร็จ",IconUtility.SUCCESS),
 	REQUEST_USER_VIEW_SUCCESS("สำเร็จ","ขณะนี้คุณอยู่ในมุมมองลูกค้าแล้ว",IconUtility.SUCCESS),
 	REQUEST_BACK_TO_ADMIN("สำเร็จ","คุณกลับสู่สถานะผู้ดูแลระบบ",IconUtility.SUCCESS),
-
+	REPLY_CONTACT_SUCCESS("สำเร็จ","คุณได้ทำการตอบกลับข้อความสำเร็จ",IconUtility.SUCCESS),
+	
 	// USER ROLE
 	AMOUNT_OUT_OF_BOUND("ผิดพลาด","จำนวนสินค้าที่เลือก มีจำนวนมากกว่าสินค้าในคลัง กรุณาลองใหม่อีกครั้ง",IconUtility.DANGER),
 	OTHER_AMOUNT_NULL("ผิดพลาด","กรุณาเลือกชนิดการจัดส่งสินค้า",IconUtility.DANGER),
@@ -43,7 +44,8 @@ public enum AlertMessage {
 	CONFIRM_PAYMENT_SUCCESS("สำเร็จ", "คุณได้ทำการแจ้งชำระเงินสำเร็จ",IconUtility.SUCCESS), 
 	NO_PAYMENT_ORDER_WARNING("คำเตือน","คุณไม่มีรายการค้างชำระเงิน", IconUtility.WARNING),
 	EDIT_PROFILE_SUCCESS("สำเร็จ","คุณได้ทำการแก้ไขข้อมูลส่วนตัวสำเร็จ",IconUtility.SUCCESS),
-	EDIT_PROFILE_INVALID_PASSWORD("ผิดพลาด","รหัสผ่านที่คุณกรอกผิดพลาด กรุณาลองอีกครั้ง",IconUtility.DANGER);
+	EDIT_PROFILE_INVALID_PASSWORD("ผิดพลาด","รหัสผ่านที่คุณกรอกผิดพลาด กรุณาลองอีกครั้ง",IconUtility.DANGER),
+	SEND_CONTACT_SUCCESS("สำเร็จ","คุณส่งข้อความสำเร็จ",IconUtility.SUCCESS);
 	
 	
 	private String alertTitle;

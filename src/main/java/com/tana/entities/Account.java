@@ -22,7 +22,9 @@ public class Account implements java.io.Serializable {
 	private String role;
 	private String email;
 	private List<Orders> listOrder;
-
+	private List<ContactMessage> listContactMsg;
+	private List<ReplyMessage> listReplyMsg;
+	
 	public Account() {
 	}
 
@@ -153,4 +155,26 @@ public class Account implements java.io.Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "msgOwner")
+	@JsonManagedReference
+	public List<ContactMessage> getListContactMsg() {
+		return listContactMsg;
+	}
+
+	public void setListContactMsg(List<ContactMessage> listContactMsg) {
+		this.listContactMsg = listContactMsg;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "msgOwner")
+	@JsonManagedReference
+	public List<ReplyMessage> getListReplyMsg() {
+		return listReplyMsg;
+	}
+
+	public void setListReplyMsg(List<ReplyMessage> listReplyMsg) {
+		this.listReplyMsg = listReplyMsg;
+	}
+	
+	
 }
