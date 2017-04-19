@@ -14,12 +14,12 @@ public class Payment implements java.io.Serializable {
 	private String paymentMins;
 	private String paymentHour;
 	private Date paymentDate;
-	private String bank;
+	private BankAccount bank;
 	private String imgUrl;
 	private Orders order;
 	public Payment(){}
 
-	public Payment(long id, String paymentMins, String paymentHour, Date paymentDate, String bank, String imgUrl,
+	public Payment(long id, String paymentMins, String paymentHour, Date paymentDate, BankAccount bank, String imgUrl,
 			Orders order) {
 		super();
 		this.id = id;
@@ -89,14 +89,14 @@ public class Payment implements java.io.Serializable {
 		this.imgUrl = imgUrl;
 	}
 	
-	@Column(name="payment_bank" , nullable=false)
-	public String getBank() {
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="bank_id")
+	public BankAccount getBank() {
 		return bank;
 	}
 
-	public void setBank(String bank) {
+	public void setBank(BankAccount bank) {
 		this.bank = bank;
 	}
-	
 	
 }

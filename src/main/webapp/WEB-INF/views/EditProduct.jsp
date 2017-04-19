@@ -230,7 +230,7 @@
 					<div class="col-md-12">
 						<p class="text-center">
 							<input class="btn btn-success" type="submit"
-								onclick="return validateEditProd(product)" value="Add Product" />
+								onclick="return validateEditProd(product)" value="Edit Product" />
 						</p>
 					</div>
 				</div>

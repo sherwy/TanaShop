@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.tana.Repositories.BankAccountRepository;
 import com.tana.Repositories.OrdersRepository;
 import com.tana.Repositories.PaymentRepository;
 import com.tana.entities.Account;
@@ -32,7 +33,7 @@ import com.tana.utilities.UserRole;
 import com.tana.utilities.VariableUtility;
 
 @Controller
-public class PaymentController {
+public class PaymentController extends HeaderController{
 
 	private Logger LOGGER = Logger.getLogger(PaymentController.class);
 
@@ -42,10 +43,9 @@ public class PaymentController {
 	@Autowired
 	private OrdersRepository ordersManager;
 
-	@ModelAttribute("account")
-	public Account getAccount() {
-		return new Account();
-	}
+	@Autowired
+	private BankAccountRepository bankManager;
+	
 
 	@RequestMapping(value = "/confirmPayment", method = RequestMethod.POST)
 	public String confirmCart(@ModelAttribute("payment") Payment payment, @RequestParam("date") String dateString,
@@ -62,13 +62,13 @@ public class PaymentController {
 
 			String fileName = null;
 
-			FolderUtilities.createFolderIfNotExist(VariableUtility.IMG_PATH_PAYMENT);
+			FolderUtilities.createFolderIfNotExist(VariableUtility.getPaymentPathFile(order.getOrderId()+""));
 
 			try {
 				byte[] bytes = file.getBytes();
 				fileName = orderId + "_" + payment.getId() + "_" + file.getOriginalFilename();
 				LOGGER.info("File name : " + fileName);
-				Path path = Paths.get(VariableUtility.IMG_PATH_PAYMENT + fileName);
+				Path path = Paths.get(VariableUtility.getPaymentPathFile(order.getOrderId()+""));
 				Files.write(path, bytes);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -94,7 +94,6 @@ public class PaymentController {
 		Account account = SessionUtility.getAccount(session);
 		AlertMessage successAlert = null;
 		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.USER, account, successAlert);
-
 		if (successAlert == generatedAlert) {
 			Orders order = ordersManager.findByStatusAndAccountId(OrderStatusUtilities.PENDING_PAYMENT.getStatus(),
 					account.getAccountId());
@@ -102,6 +101,7 @@ public class PaymentController {
 				model.addAttribute("date", new Date());
 				model.addAttribute("payment", new Payment());
 				model.addAttribute("orderId", order.getOrderId());
+				model.addAttribute("listBank",bankManager.findAll());
 				return "ConfirmPayment";
 			} else {
 				AlertMessage alert = AlertMessage.NO_PAYMENT_ORDER_WARNING;

@@ -9,6 +9,11 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="form-group">
 	<script>
+		$(document).ready(function() {
+			$('#shopDescription').val("${detail.shopDescription}");
+			$('#shopDetail').val("${detail.shopDetail}");
+		});
+
 		function validateGenaralForm(frm) {
 			if (frm.shopName.value == "") {
 				alert("กรุณากรอกชื่อร้าน");
@@ -64,8 +69,7 @@
 							<form:label path="shopDescription">รายละเอียดร้านค้า</form:label>
 						</div>
 						<div class="col-md-6">
-							<form:textarea path="shopDescription" class="form-control"
-								value="${detail.shopDescription}"></form:textarea>
+							<form:textarea path="shopDescription" class="form-control"></form:textarea>
 						</div>
 					</div>
 					<div class="row">
@@ -73,8 +77,7 @@
 							<form:label path="shopDetail">ข้อมูลร้านค้า</form:label>
 						</div>
 						<div class="col-md-6">
-							<form:textarea path="shopDetail" class="form-control"
-								value="${detail.shopDetail}"></form:textarea>
+							<form:textarea path="shopDetail" class="form-control"></form:textarea>
 						</div>
 					</div>
 
@@ -122,7 +125,7 @@
 							<form:label path="shopDetail">ข้อมูลร้านค้า</form:label>
 						</div>
 						<div class="col-md-6">
-							<form:textarea path="shopDetail" class="form-control" ></form:textarea>
+							<form:textarea path="shopDetail" class="form-control"></form:textarea>
 						</div>
 					</div>
 
@@ -131,7 +134,7 @@
 							<form:label path="shopTelephone">เบอร์โทรศัพท์</form:label>
 						</div>
 						<div class="col-md-6">
-							<form:input path="shopTelephone" class="form-control"/>
+							<form:input path="shopTelephone" class="form-control" />
 						</div>
 					</div>
 
@@ -140,7 +143,7 @@
 							<form:label path="email">อีเมล</form:label>
 						</div>
 						<div class="col-md-6">
-							<form:input path="email" class="form-control"/>
+							<form:input path="email" class="form-control" />
 						</div>
 					</div>
 				</c:otherwise>

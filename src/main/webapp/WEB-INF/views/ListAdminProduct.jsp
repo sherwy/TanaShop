@@ -5,8 +5,9 @@
 <%@ page language="java" contentType="text/html; charset=TIS-620"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <script>
-	function confirmation(){
+	function confirmation() {
 		var isConfirm = confirm("คุณต้องการลบสินค้าใช่ไหม ?");
 		return isConfirm;
 	}
@@ -28,8 +29,11 @@
 					<c:when test="${product.status != 'Deleted' }">
 						<tr>
 							<td>${product.productId }</td>
-							<td><img src="/Images/Products/${product.imgUrl}"
-								width="100px" height="100px" /></td>
+							<td><c:set var="prodUrl" value="${fn:split(product.imgUrl, ',')}" /> 
+								<c:if test="${fn:length(prodUrl) gt 0}">
+									<img width="100px" height="100px"
+										src="/Images/Products/${product.productId }/${prodUrl[0] }"/>
+								</c:if></td>
 							<td>${product.productName}</td>
 							<td>${product.price}</td>
 							<td>${product.productDetail}</td>
@@ -38,7 +42,8 @@
 								class="btn btn-warning" role="button">Edit</a></td>
 							<td><a
 								href="<c:url value='/deleteProduct/${product.productId }' />"
-								class="btn btn-danger" onclick="return confirmation()" role="button">Delete</a></td>
+								class="btn btn-danger" onclick="return confirmation()"
+								role="button">Delete</a></td>
 						</tr>
 					</c:when>
 				</c:choose>

@@ -4,25 +4,30 @@
 </jsp:include>
 <%@ page language="java" contentType="text/html; charset=TIS-620"
 	pageEncoding="UTF-8"%>
-	<script language="JavaScript" type="text/javascript"
+<script type="text/javascript"
 	src="/Tools/cbrte/html2xhtml.min.js"></script>
-<script language="JavaScript" type="text/javascript"
+<script type="text/javascript"
 	src="/Tools/cbrte/richtext.js"></script>
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <div class="form-group">
-
-	<script language="JavaScript">
-		function validateWelcomeDetail(frm){
+	<script>
+		initRTE("/Tools/cbrte/images/", "/Tools/cbrte/", "", true);
+		$(document).ready(
+				function() {
+					$('#welcomeDetailText').contents().find('html').html(
+							"${fn:replace(welcome.welcomeText,'\"','\'') }");
+				});
+		function validateWelcomeDetail(frm) {
 			updateRTEs();
-			if(frm.welcomeDetailText.value == ""){
+			if (frm.welcomeDetailText.value == "") {
 				alert("กรุณาระบุข้อความต้อนรับ");
 				return false;
 			}
 		}
-		initRTE("/Tools/cbrte/images/", "/Tools/cbrte/", "", true);
 	</script>
 	<form:form action="/welcomeDetail" method="POST"
 		modelAttribute="welcomeDetail">
@@ -34,7 +39,7 @@
 						<p>
 							<b>Javascript must be enabled to use this form.</b>
 						</p>
-					</noscript> <script language="JavaScript" type="text/javascript">
+					</noscript> <script type="text/javascript">
 						//build new richTextEditor
 						var rte1 = new richTextEditor('welcomeDetailText');
 						rte1.html = '';
@@ -51,8 +56,8 @@
 						rte1.cmdUnderline = true;
 						rte1.cmdStrikethrough = true;
 						rte1.cmdSuperscript = true;
-						rte1.cmdSubscript = true;	
-						/*
+						rte1.cmdSubscript = true;
+
 						rte1.cmdJustifyLeft = true;
 						rte1.cmdJustifyCenter = true;
 						rte1.cmdJustifyRight = true;
@@ -79,11 +84,12 @@
 						rte1.cmdRedo = true;
 						rte1.cmdRemoveFormat = true;
 						rte1.cmdUnlink = true;
-						*/
+
 						//rte1.toggleSrc = false;
 
 						rte1.build();
-					</script></td>
+					</script> <form:hidden path="welcomeText" value="${welcome.welcomeText }" />
+				</td>
 			</tr>
 			<tr>
 				<td colspan="2">
@@ -92,8 +98,8 @@
 						<div class="col-md-4">
 							<p class="text-center">
 								<input class="btn btn-success"
-									onclick="return validateWelcomeDetail(welcomeDetail)" type="submit"
-									value="บันทึก" />
+									onclick="return validateWelcomeDetail(welcomeDetail)"
+									type="submit" value="บันทึก" />
 							</p>
 						</div>
 						<div class="col-md-4"></div>

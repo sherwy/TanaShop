@@ -9,6 +9,11 @@
 <link rel="shortcut icon" href="../favicon.ico">
 <link rel="stylesheet" type="text/css"
 	href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+
+<link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow&v1'
+	rel='stylesheet' type='text/css' />
+<link href='http://fonts.googleapis.com/css?family=Pacifico'
+	rel='stylesheet' type='text/css' />
 <%@page import="com.google.gson.Gson"%>
 <%
 	String generalDetailJson = JsonReader.readUrl("http://localhost:8081/rest/generalDetailShop");
@@ -16,16 +21,55 @@
 	Gson gson = new Gson();
 	GeneralDetail general = gson.fromJson(generalDetailJson, GeneralDetail.class);
 	WelcomeDetail welcome = gson.fromJson(welcomeDetailJson, WelcomeDetail.class);
+
+	AlertMessage alert = (AlertMessage) session.getAttribute("alert");
+	if (alert != null) {
+		request.setAttribute("alert", alert);
+		session.removeAttribute("alert");
+	}
 %>
 <title><%=general.getShopName()%> :: ${param.title }</title>
-<script type="text/javascript" src="/Tools/js/jquery-3.2.1.js"></script>
-<script type="text/javascript" src="/Tools/js/materialize.js"></script>
+<link rel="stylesheet" type="text/css" href="/Tools/css/style.css" />
+<link rel="stylesheet" type="text/css" href="/Tools/css/elastislide.css" />
+<script type="text/javascript" src="/Tools/js/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="/Tools/js/jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="/Tools/js/jquery.elastislide.js"></script>
+<script type="text/javascript" src="/Tools/js/gallery.js"></script>
+<script type="text/javascript" src="/Tools/js/jquery.mousewheel.js"></script>
+<script type="text/javascript"
+	src="https://code.jquery.com/jquery-1.12.0.js"></script>
+<script type="text/javascript"
+	src="https://code.jquery.com/jquery-migrate-1.4.0.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("body").css("display", "none");
 		$("body").fadeIn(500);
 	});
 </script>
+<noscript>
+	<style>
+.es-carousel ul {
+	display: block;
+}
+</style>
+</noscript>
+<script id="img-wrapper-tmpl" type="text/x-jquery-tmpl">	
+			<div class="rg-image-wrapper">
+				{{if itemsCount > 1}}
+					<div class="rg-image-nav">
+						<a href="#" class="rg-image-nav-prev">Previous Image</a>
+						<a href="#" class="rg-image-nav-next">Next Image</a>
+					</div>
+				{{/if}}
+				<div class="rg-image"></div>
+				<div class="rg-loading"></div>
+				<div class="rg-caption-wrapper">
+					<div class="rg-caption" style="display:none;">
+						<p></p>
+					</div>
+				</div>
+			</div>
+		</script>
 </head>
 <body>
 
@@ -42,14 +86,46 @@
 			}
 		}
 	</script>
-
+	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 	<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 	<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+	<c:if test="${requestScope.alert != null }">
+		<c:set var="alert" value="${requestScope.alert }" />
+	</c:if>
 	<div class="container">
 		<%@ page import="com.tana.entities.*"%>
 		<%@ page import="com.tana.utilities.*"%>
 		<%
 			Account user = (Account) session.getAttribute("user");
+			String isAdminView = (String)session.getAttribute(SessionUtility.isAdminView);
+			System.out.print(isAdminView);
+		%>
+
+		<%
+			if (user != null) {
+				if ((UserRole.ADMIN.isRole(user))) {
+		%>
+		<div class="row adminView">
+			<div class="content">
+				<a href="/requestUserView" class="btn warning success" role="button">มุมมองลูกค้า <span
+					class="glyphicon glyphicon-record"></span></a>
+			</div>
+		</div>
+		<%
+			} else if ("true".equals(isAdminView)) {
+		%>
+		<div class="row adminView">
+			<div class="content">
+				คุณกำลังอยู่ในมุมมองลูกค้า 
+				<a href="/backToAdminRole" class="btn warning fail" role="button">ออกจากมุมมองลูกค้า <span
+					class="glyphicon glyphicon-remove-circle"></span></a>
+			</div>
+		</div>
+
+
+		<%
+			}
+			}
 		%>
 
 		<!--  banner -->
@@ -59,6 +135,7 @@
 
 		<!-- nav -->
 		<div class="row">
+
 			<nav class="navbar navbar-default">
 			<div class="container-fluid">
 				<div class="navbar-header">
@@ -148,16 +225,15 @@
 							aria-expanded="false">การเงิน <span class="caret"></span>
 						</a>
 							<ul class="menuNavBlock-inside dropdown-menu">
-								<li class="menuNav-inside"><a href="#">รายการแจ้งชำระเงิน</a></li>
-								<li class="menuNav-inside"><a href="#">บัญชีธนาคาร</a></li>
+								<li class="menuNav-inside"><a href="/listPaymentOrder">รายการแจ้งชำระเงิน</a></li>
+								<li class="menuNav-inside"><a href="/addBank">บัญชีธนาคาร</a></li>
 							</ul></li>
 						<li class="menuNav-admin"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown" role="button" aria-haspopup="true"
 							aria-expanded="false">ขนส่งสินค้า <span class="caret"></span>
 						</a>
 							<ul class="menuNavBlock-inside dropdown-menu">
-								<li class="menuNav-inside"><a href="#">รายการจัดส่งสินค้า</a></li>
-								<li class="menuNav-inside"><a href="#">รูปแบบการขนส่งสินค้า</a></li>
+								<li class="menuNav-inside"><a href="/listDeliveryOrder">รายการจัดส่งสินค้า</a></li>
 							</ul></li>
 						<li class="menuNav-admin"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -166,7 +242,7 @@
 							<ul class="menuNavBlock-inside dropdown-menu">
 								<li class="menuNav-inside"><a href="#">รายการติดต่อจากลูกค้า</a></li>
 								<li class="menuNav-inside"><a href="#">เว็บบอร์ด</a></li>
-								<li class="menuNav-inside"><a href="#">รายชื่อลูกค้า</a></li>
+								<li class="menuNav-inside"><a href="/listUser">รายชื่อลูกค้า</a></li>
 							</ul></li>
 						</li>
 
@@ -276,15 +352,105 @@
 						<a href="/logout" class="btn btn-danger buttonFooter"
 							role="button">ออกจากระบบ</a>
 					</div>
+					<%
+						if (UserRole.USER.isRole(user)) {
+					%>
 					<div class="col-md-6">
-						<a href="#" class="btn btn-success buttonFooter" role="button">แก้ไขข้อมูลส่วนตัว</a>
+						<a href="/editProfile" class="btn btn-success buttonFooter"
+							role="button">แก้ไขข้อมูลส่วนตัว</a>
 					</div>
-
+					<%
+						}
+					%>
 				</div>
 
 				<%
 					}
 				%>
+
+				<hr />
+				<div class="row nav-category">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="nav-header">
+								<b>ประเภทสินค้า</b>
+							</div>
+						</div>
+					</div>
+					<div class="row child-nav">
+						<div class="col-md-12">
+							<a href="/listProduct/new"> สินค้าใหม่ ( <c:choose>
+									<c:when test="${listNewProd != null }">
+										<c:out value="${fn:length(listNewProd)}" />
+									</c:when>
+									<c:otherwise>
+							0
+							</c:otherwise>
+								</c:choose> )
+							</a>
+						</div>
+
+					</div>
+					<div class="row child-nav">
+						<div class="col-md-12">
+							<a href="/listProduct/recommended">สินค้าแนะนำ ( <c:choose>
+									<c:when test="${listRecommendedProd != null }">
+										<c:out value="${fn:length(listRecommendedProd)}" />
+									</c:when>
+									<c:otherwise>
+							0
+							</c:otherwise>
+								</c:choose> )
+							</a>
+						</div>
+					</div>
+					<div class="row child-nav">
+						<div class="col-md-12">
+							<a href="/listProduct/all">สินค้าทั้งหมด ( <c:choose>
+									<c:when test="${listAllProd != null }">
+										<c:out value="${fn:length(listAllProd)}" />
+									</c:when>
+									<c:otherwise>
+							0
+							</c:otherwise>
+								</c:choose> )
+							</a>
+						</div>
+					</div>
+					<hr />
+
+				</div>
+				<div class="row nav-category">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="nav-header">
+								<b>หมวดหมู่สินค้า</b>
+							</div>
+						</div>
+					</div>
+					<c:choose>
+						<c:when test="${listNavCategory != null }">
+							<c:forEach items="${listNavCategory }" var="category">
+								<div class="row child-nav">
+									<div class="col-md-12">
+										<a href="/listProductByCategory/${category.categoryId}">${category.categoryName }</a>
+
+										<c:forEach items="${category.listChildCategory }"
+											var="categoryChild">
+											<a href="/listProductByCategory/${categoryChild.categoryId}"><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-${categoryChild.categoryName }</p></a>
+
+										</c:forEach>
+									</div>
+								</div>
+							</c:forEach>
+						</c:when>
+						<c:otherwise>
+								ไม่มีหมวดหมู่
+						</c:otherwise>
+					</c:choose>
+
+					<hr />
+				</div>
 			</div>
 
 			<!-- content -->

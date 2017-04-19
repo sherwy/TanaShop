@@ -116,6 +116,14 @@ public class Orders implements java.io.Serializable {
 		this.otherAmount = otherAmount;
 	}
 	
-	
+	public double calPrice(){
+		double total = otherAmount;
+		for(OrderLine orderLine : listProduct){
+			int amount = orderLine.getAmount();
+			double price = orderLine.getPk().getProduct().getPrice();
+			total += (amount*price);
+		}
+		return total;
+	}
 
 }

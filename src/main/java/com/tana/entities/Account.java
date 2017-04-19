@@ -1,6 +1,5 @@
 package com.tana.entities;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
@@ -9,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name="account", catalog = "tana_shopping")
+@Table(name = "account", catalog = "tana_shopping")
 public class Account implements java.io.Serializable {
 	private long accountId;
 	private String username;
@@ -17,49 +16,54 @@ public class Account implements java.io.Serializable {
 	private String password;
 	private String firstName;
 	private String lastName;
-	private String gender;
-	private Date birthDate;
 	private String telephoneNumber;
+	private String address;
+	private String zipcode;
 	private String role;
+	private String email;
 	private List<Orders> listOrder;
-	
-	public Account(){}
-	
-	public Account(long accountId, String username, String password, String firstName, String lastName, String gender,
-			Date birthDate, String telephoneNumber, List<Orders> listOrder,String role,String imgUrl) {
+
+	public Account() {
+	}
+
+	public Account(long accountId, String username, String imgUrl, String password, String firstName, String lastName,
+			String telephoneNumber, String address, String zipcode, String role, String email, List<Orders> listOrder) {
 		super();
 		this.accountId = accountId;
 		this.username = username;
+		this.imgUrl = imgUrl;
 		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.gender = gender;
-		this.birthDate = birthDate;
 		this.telephoneNumber = telephoneNumber;
-		this.listOrder = listOrder;
+		this.address = address;
+		this.zipcode = zipcode;
 		this.role = role;
+		this.email = email;
+		this.listOrder = listOrder;
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="account_id",unique=true,nullable=false)
+	@Column(name = "account_id", unique = true, nullable = false)
 	public long getAccountId() {
 		return accountId;
 	}
+
 	public void setAccountId(long id) {
 		this.accountId = id;
 	}
 
-	@Column(name="username",unique=true,nullable=false)
+	@Column(name = "username", unique = true, nullable = false)
 	public String getUsername() {
 		return username;
 	}
-	
+
 	public void setUsername(String username) {
 		this.username = username;
 	}
 
-	@Column(name="password",nullable=false)
+	@Column(name = "password", nullable = false)
 	public String getPassword() {
 		return password;
 	}
@@ -67,8 +71,8 @@ public class Account implements java.io.Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	@Column(name="first_name",nullable=false)
+
+	@Column(name = "first_name", nullable = false)
 	public String getFirstName() {
 		return firstName;
 	}
@@ -76,8 +80,8 @@ public class Account implements java.io.Serializable {
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
-	
-	@Column(name="last_name",nullable=false)
+
+	@Column(name = "last_name", nullable = false)
 	public String getLastName() {
 		return lastName;
 	}
@@ -85,26 +89,8 @@ public class Account implements java.io.Serializable {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	
-	@Column(name="gender",nullable=false)
-	public String getGender() {
-		return gender;
-	}
 
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-	@Temporal(TemporalType.DATE)
-	@Column(name="birthdate")
-	public Date getBirthDate() {
-		return birthDate;
-	}
-
-	public void setBirthDate(Date birthDate) {
-		this.birthDate = birthDate;
-	}
-	
-	@Column(name="telephone_number",unique=true,nullable=false)
+	@Column(name = "telephone_number", unique = true, nullable = false)
 	public String getTelephoneNumber() {
 		return telephoneNumber;
 	}
@@ -112,8 +98,8 @@ public class Account implements java.io.Serializable {
 	public void setTelephoneNumber(String telephoneNumber) {
 		this.telephoneNumber = telephoneNumber;
 	}
-	
-	@OneToMany(fetch=FetchType.LAZY,mappedBy="customer")
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
 	@JsonManagedReference
 	public List<Orders> getListOrder() {
 		return listOrder;
@@ -123,7 +109,7 @@ public class Account implements java.io.Serializable {
 		this.listOrder = listOrder;
 	}
 
-	@Column(name="role",nullable=false)
+	@Column(name = "role", nullable = false)
 	public String getRole() {
 		return role;
 	}
@@ -131,8 +117,8 @@ public class Account implements java.io.Serializable {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	
-	@Column(name="img_url",nullable=false)
+
+	@Column(name = "img_url", nullable = false)
 	public String getImgUrl() {
 		return imgUrl;
 	}
@@ -140,7 +126,31 @@ public class Account implements java.io.Serializable {
 	public void setImgUrl(String imgUrl) {
 		this.imgUrl = imgUrl;
 	}
-	
-	
-	
+
+	@Column(name = "address", nullable = false)
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	@Column(name = "zipcode", nullable = false)
+	public String getZipcode() {
+		return zipcode;
+	}
+
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
+	}
+
+	@Column(name = "email", nullable = false ,unique = true)
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 }

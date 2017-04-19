@@ -17,6 +17,9 @@ public interface ProductRepository  extends CrudRepository<Product,Long>{
 	
 	List<Product> findProductByStatus(String staus);
 	
+	@Query(value="SELECT * FROM product WHERE category_id = ?1",nativeQuery=true)
+	List<Product> findProductByCategoryId(long categoryId);
+	
 	@Query(value="SELECT * FROM product p  WHERE p.status <> ?1",nativeQuery=true)
 	List<Product> findProductExceptStatus(String status);
 }

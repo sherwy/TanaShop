@@ -1,5 +1,7 @@
 package com.tana.utilities;
 
+import java.util.HashMap;
+
 public enum OrderStatusUtilities {
 	CART("ตะกร้า"),
 	PENDING_PAYMENT("รอการชำระเงิน"),

@@ -1,11 +1,11 @@
 package com.tana.controller;
 
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -14,24 +14,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.tana.Repositories.AccountRepository;
 import com.tana.entities.Account;
 import com.tana.utilities.AlertMessage;
 import com.tana.utilities.SessionUtility;
 
 @Controller
-public class LoginController {
+public class LoginController extends HeaderController{
 
 	private Logger LOGGER = Logger.getLogger(LoginController.class);
-
-	@Autowired
-	private AccountRepository accountRepository;
-
-	@ModelAttribute("account")
-	public Account getAccount() {
-		return new Account();
-	}
-
+	
 	@GetMapping("/login")
 	public String goToLogin(Model model) {
 		LOGGER.info("Redirect to login page");
@@ -65,6 +56,8 @@ public class LoginController {
 		}else{
 			alert = AlertMessage.ANONYMOUS_USER;
 		}
+
+		session.removeAttribute(SessionUtility.isAdminView);
 		model.addAttribute("alert",alert);
 		return "index";
 	}

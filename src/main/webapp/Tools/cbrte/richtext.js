@@ -538,11 +538,11 @@ function dlgColorPalette(rte, command) {
 		var iTopPos = findPosY(buttonElement) + buttonElement.offsetHeight;
 		var oDialog = document.getElementById('cp');
 		
-		//oDialog.style.left = iLeftPos + "px";
+		oDialog.style.left = (iLeftPos-500) + "px";
 		//oDialog.style.top = iTopPos + "px";
 		
-		oDialog.style.left = "500px";
-		oDialog.style.top = "480px";
+		//oDialog.style.left = "500px";
+		//oDialog.style.top = "480px";
 		
 		if ((command == lastCommand) && (rte == currentRTE)) {
 			//if current command dialog is currently open, close it

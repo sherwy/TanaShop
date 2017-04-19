@@ -13,4 +13,7 @@ public interface CategoryRepository extends JpaRepository<OrderCategory,Long>{
 	
 	@Query(value="SELECT * FROM order_category WHERE parent_category_id is null",nativeQuery= true)
 	List<OrderCategory> findParentCategory();
+	
+	@Query(value="SELECT * FROM order_category WHERE category_id = ?1",nativeQuery= true)
+	OrderCategory findCategoryById(long id);
 }

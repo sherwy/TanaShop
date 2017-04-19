@@ -1,11 +1,8 @@
 package com.tana.controller;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -25,8 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.tana.Repositories.CategoryRepository;
 import com.tana.Repositories.OrdersRepository;
-import com.tana.Repositories.ProductRepository;
 import com.tana.entities.Account;
+import com.tana.entities.OrderCategory;
 import com.tana.entities.Orders;
 import com.tana.entities.OrderLine;
 import com.tana.entities.Product;
@@ -38,12 +35,9 @@ import com.tana.utilities.UserRole;
 import com.tana.utilities.VariableUtility;
 
 @Controller
-public class ProductController {
+public class ProductController extends HeaderController {
 
 	private Logger LOGGER = Logger.getLogger(ProductController.class);
-
-	@Autowired
-	private ProductRepository productManager;
 
 	@Autowired
 	private OrdersRepository ordersManager;
@@ -54,11 +48,6 @@ public class ProductController {
 	@ModelAttribute("product")
 	public Product getProduct() {
 		return new Product();
-	}
-
-	@ModelAttribute("account")
-	public Account getAccount() {
-		return new Account();
 	}
 
 	@RequestMapping(value = "/addProduct", method = RequestMethod.GET)
@@ -98,91 +87,94 @@ public class ProductController {
 			LOGGER.info("Product '" + product.getProductId() + "' has been saved.");
 			LOGGER.info("Product Detail : " + productDetailText);
 
-			// product.setStatus(ProductStatusUtilities.AVAILABLE.getStatus());
 			product.setProductDetail(productDetailText);
 			Product productReturned = productManager.save(product);
 
-			String fileName = null;
-			String imgUrlDB = "";
-			try {
-				String pathFile = VariableUtility.getProductPathFile(productReturned.getProductId() + "",
-						productReturned.getProductName());
-				FolderUtilities.createFolderIfNotExist(pathFile);
-				for (int i = 0; i < files.length; i++) {
-					if (i != 0) {
-						imgUrlDB += ",";
-					}
-					MultipartFile file = files[i];
+			String imgUrl = FolderUtilities.uploadFiles(files,
+					VariableUtility.getProductPathFile(productReturned.getProductId() + ""));
+			if (imgUrl != null)
+				productReturned.setImgUrl(imgUrl);
 
-					byte[] bytes = file.getBytes();
-					fileName = product.getProductId() + "_" + product.getProductName() + file.getOriginalFilename();
-					LOGGER.info("File name : " + fileName);
-					imgUrlDB += fileName;
-					Path path = Paths.get(pathFile + fileName);
-					Files.write(path, bytes);
-				}
-				productReturned.setImgUrl(imgUrlDB);
-				
-				productReturned = productManager.save(productReturned);
-				if(productReturned.getImgUrl() == null){
-					productManager.delete(productReturned.getProductId());
-					model.addAttribute("alert",AlertMessage.INVALID_PIC_FAIL);
-				}else{
-					model.addAttribute("alert", generatedAlert);
-				}
-				model.addAttribute("listCategory", categoryManager.findParentCategory());
-				model.addAttribute("listProdStatus", listProductStatus());
-				return "AddProduct";
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			productReturned = productManager.save(productReturned);
+
+			model.addAttribute("listCategory", categoryManager.findParentCategory());
+			model.addAttribute("listProdStatus", listProductStatus());
+			return "AddProduct";
+
 		}
 		model.addAttribute("alert", generatedAlert);
 		return "index";
+
 	}
 
-	@RequestMapping(value = "/listProduct", method = RequestMethod.GET)
-	public String doListProduct(HttpSession session, ModelMap model) {
+	@RequestMapping(value = "/listProduct/{operation}", method = RequestMethod.GET)
+	public String doListProduct(@PathVariable("operation") String operation, HttpSession session, ModelMap model) {
+		LOGGER.info("Operation <List prod> : "+operation);
 		Account account = SessionUtility.getAccount(session);
-		AlertMessage successAlert = null;
-		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(account, successAlert);
+		List<Product> listProduct = null;
+		if("recommended".equals(operation)){
+			listProduct = productManager.findProductByStatus(ProductStatusUtilities.RECOMMENDED_PROD.getStatus());
+			model.addAttribute("titleHeader","สินค้าแนะนำ");
+		}else if("new".equals(operation)){
+			listProduct = productManager.findProductByStatus(ProductStatusUtilities.NEW_PROD.getStatus());
+			model.addAttribute("titleHeader","สินค้าค้าใหม่");
+		}else if("all".equals(operation)){
+			listProduct = productManager.findProductExceptStatus(ProductStatusUtilities.DELETED.getStatus());
+			model.addAttribute("titleHeader","สินค้าทั้งหมด");
+		}
+			
+		if (listProduct != null) {
+			HashMap<Long, String> prodInCart = new HashMap<>();
+			if (account != null) {
+				Orders orders = ordersManager.findCartByAccountId(account.getAccountId());
 
-		if (successAlert == generatedAlert) {
-
-			List<Product> listProduct = productManager.findAll();
-			Orders orders = ordersManager.findCartByAccountId(account.getAccountId());
-
-			List<Product> listAvaliableProduct = new ArrayList<>();
-			if (orders == null) {
-				for (Product product : listProduct) {
-					listAvaliableProduct.add(product);
+				if (orders != null) {
+					for (Product product : listProduct) {
+						for (OrderLine orderLine : orders.getListProduct()) {
+							Product cartProduct = orderLine.getPk().getProduct();
+							if (product.getProductId() == cartProduct.getProductId()) {
+								prodInCart.put(product.getProductId(), product.getProductName());
+								LOGGER.info("Product (" + product.getProductId() + ") is already in cart");
+								break;
+							}
+						}
+					}
 				}
-			} else {
-				List<Product> listNotAvaliableProduct = new ArrayList<>();
+			}
+			model.addAttribute("prodInCart", prodInCart);
+			model.addAttribute("listProd", listProduct);
+			return "ListProduct";
+		}
+		model.addAttribute("alert",AlertMessage.INVALID_PAGE);
+		return "index";
+	}
+	
+	@RequestMapping(value = "/listProductByCategory/{categoryId}", method = RequestMethod.GET)
+	public String doListProduct(@PathVariable("categoryId") int categoryIdArgs, HttpSession session, ModelMap model) {
+		LOGGER.info("Category Id <List prod by cat> : "+categoryIdArgs);
+		Account account = SessionUtility.getAccount(session);
+		List<Product> listProduct = productManager.findProductByCategoryId(categoryIdArgs);
+		OrderCategory category = categoryManager.findCategoryById(categoryIdArgs);
+		HashMap<Long, String> prodInCart = new HashMap<>();
+		if (account != null) {
+			Orders orders = ordersManager.findCartByAccountId(account.getAccountId());
+			if (orders != null) {
 				for (Product product : listProduct) {
-					boolean isAvaliable = true;
 					for (OrderLine orderLine : orders.getListProduct()) {
 						Product cartProduct = orderLine.getPk().getProduct();
 						if (product.getProductId() == cartProduct.getProductId()) {
-							listNotAvaliableProduct.add(product);
-							LOGGER.info("Product (" + product.getProductId() + ") added on not avaliable product");
-							isAvaliable = false;
+							prodInCart.put(product.getProductId(), product.getProductName());
+							LOGGER.info("Product (" + product.getProductId() + ") is already in cart");
 							break;
 						}
 					}
-					if (isAvaliable) {
-						listAvaliableProduct.add(product);
-						LOGGER.info("Product (" + product.getProductId() + ") added on avaliable product");
-					}
 				}
-				model.addAttribute("listNotAvaProduct", listNotAvaliableProduct);
 			}
-
-			model.addAttribute("listAvaProduct", listAvaliableProduct);
-			return "ListProduct";
 		}
-		model.addAttribute("alert", generatedAlert);
-		return "index";
+		model.addAttribute("titleHeader","สินค้าตามหมวดหมู่ ("+category.getCategoryName()+")");
+		model.addAttribute("prodInCart", prodInCart);
+		model.addAttribute("listProd", listProduct);
+		return "ListProduct";
 	}
 
 	@GetMapping(value = "/listAdminProduct")
@@ -221,29 +213,24 @@ public class ProductController {
 	}
 
 	@RequestMapping(value = "/editProduct", method = RequestMethod.POST)
-	public String doEditProduct(@ModelAttribute("SpringWeb") Product product, @RequestParam("file") MultipartFile file,
+	public String doEditProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile[] files,
 			@RequestParam("productDetailText") String productDetailText, HttpSession session, ModelMap model) {
 
 		Account account = SessionUtility.getAccount(session);
 		AlertMessage successAlert = AlertMessage.EDIT_PROD_SUCCESS;
 		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
 
-		if (successAlert == generatedAlert) {
-			String fileName = null;
-			try {
-				byte[] bytes = file.getBytes();
-				fileName = product.getProductName() + "_" + file.getOriginalFilename();
-				LOGGER.info("File name : " + fileName);
-				Path path = Paths.get(VariableUtility.IMG_PATH_PRODUCTS + fileName);
-				Files.write(path, bytes);
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			product.setImgUrl(fileName);
+		if (!"".equals(productDetailText))
 			product.setProductDetail(productDetailText);
+		if (successAlert == generatedAlert) {
+			String imgUrl = FolderUtilities.uploadFiles(files,
+					VariableUtility.getProductPathFile(product.getProductId() + ""));
+			if (imgUrl != null && !imgUrl.equals(""))
+				product.setImgUrl(imgUrl);
 			productManager.save(product);
-			LOGGER.info("Product '" + product.getProductName() + "' has been saved.");
+			List<Product> listProduct = productManager.findAll();
+			model.addAttribute("listAdminProduct", listProduct);
+			return "ListAdminProduct";
 		}
 		model.addAttribute("alert", generatedAlert);
 		return "index";

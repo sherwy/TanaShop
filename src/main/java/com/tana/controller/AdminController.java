@@ -1,5 +1,7 @@
 package com.tana.controller;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,21 +18,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.tana.Repositories.BankAccountRepository;
 import com.tana.Repositories.DeliveryRepository;
 import com.tana.Repositories.OrdersRepository;
-import com.tana.Repositories.ProductRepository;
 import com.tana.entities.Account;
+import com.tana.entities.BankAccount;
 import com.tana.entities.Delivery;
 import com.tana.entities.Orders;
 import com.tana.entities.Product;
 import com.tana.utilities.AlertMessage;
+import com.tana.utilities.Bank;
+import com.tana.utilities.BankType;
 import com.tana.utilities.OrderStatusUtilities;
 import com.tana.utilities.ProductStatusUtilities;
 import com.tana.utilities.SessionUtility;
 import com.tana.utilities.UserRole;
 
 @Controller
-public class AdminController {
+public class AdminController extends HeaderController {
 
 	private Logger LOGGER = Logger.getLogger(AdminController.class);
 
@@ -38,18 +43,47 @@ public class AdminController {
 	private OrdersRepository ordersManager;
 
 	@Autowired
-	private ProductRepository productManager;
+	private BankAccountRepository bankAccountManager;
 
 	@Autowired
 	private DeliveryRepository deliveryManager;
 
-	@ModelAttribute("account")
-	public Account getAccount() {
-		return new Account();
+	@RequestMapping(value = "/requestUserView", method = RequestMethod.GET)
+	public String requestUserView(HttpSession session, Model model) {
+		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = AlertMessage.REQUEST_USER_VIEW_SUCCESS;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+		if (successAlert == generatedAlert) {
+			account.setRole(UserRole.USER.getRole());
+			session.setAttribute("user", account);
+			session.setAttribute(SessionUtility.isAdminView,"true");
+		}
+		session.setAttribute("alert", generatedAlert);
+		return "index";
+	}
+	
+	@RequestMapping(value = "/backToAdminRole", method = RequestMethod.GET)
+	public String backToAdminRole(HttpSession session, Model model) {
+		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = AlertMessage.REQUEST_BACK_TO_ADMIN;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.USER, account, successAlert);
+		String isAdminView = (String) session.getAttribute(SessionUtility.isAdminView);
+		if (successAlert == generatedAlert) {
+			if("true".equals(isAdminView)){
+				account.setRole(UserRole.ADMIN.getRole());
+				session.setAttribute("user", account);
+				session.removeAttribute(SessionUtility.isAdminView);
+			}else{
+				generatedAlert = AlertMessage.GENERAL_ERROR;
+			}
+		}
+		session.setAttribute("alert", generatedAlert);
+		return "index";
 	}
 
 	@RequestMapping(value = "/listAllOrder", method = RequestMethod.GET)
-	public String listAllOrder(@RequestParam(value="alert",required=false) AlertMessage alert,HttpSession session, Model model) {
+	public String listAllOrder(@RequestParam(value = "alert", required = false) AlertMessage alert, HttpSession session,
+			Model model) {
 		Account account = SessionUtility.getAccount(session);
 		AlertMessage successAlert = null;
 		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
@@ -64,11 +98,11 @@ public class AdminController {
 				model.addAttribute("listOrder", listOrder);
 				model.addAttribute("delivery", new Delivery());
 			}
-			if(alert != null)
-				model.addAttribute("alert",alert);
+			if (alert != null)
+				model.addAttribute("alert", alert);
 			return "ListOrder";
 		}
-		model.addAttribute("alert", generatedAlert);
+		session.setAttribute("alert", generatedAlert);
 		return "index";
 	}
 
@@ -88,15 +122,16 @@ public class AdminController {
 			} else {
 				productManager.delete(product);
 			}
-			model.addAttribute("alert", successAlert);
+			session.setAttribute("alert", successAlert);
 			return "redirect:/listAdminProduct";
 		}
-		model.addAttribute("alert", generatedAlert);
+		session.setAttribute("alert", generatedAlert);
 		return "../index";
 	}
 
 	@RequestMapping(value = "/verifyOrder/{orderId}", method = RequestMethod.GET)
-	public String verifyOrder(@PathVariable("orderId") int orderId,HttpServletRequest request, HttpSession session, ModelMap model) {
+	public String verifyOrder(@PathVariable("orderId") int orderId, HttpServletRequest request, HttpSession session,
+			ModelMap model) {
 		Account account = SessionUtility.getAccount(session);
 		AlertMessage successAlert = AlertMessage.VERIFY_ORDER_SUCCESS;
 		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
@@ -108,15 +143,15 @@ public class AdminController {
 			ordersManager.save(order);
 			LOGGER.info("OrderId {" + orderId + "} : Change order status from [" + order.getStatus() + "] to [" + status
 					+ "]");
-			model.addAttribute("alert", generatedAlert);
+			session.setAttribute("alert", generatedAlert);
 			return "redirect:/listAllOrder";
 		}
-		model.addAttribute("alert", generatedAlert);
+		session.setAttribute("alert", generatedAlert);
 		return "index";
 	}
 
 	@RequestMapping(value = "/deliveryOrder", method = RequestMethod.POST)
-	public String deliveryOrder(@ModelAttribute Delivery delivery, HttpSession session, ModelMap model) {
+	public String deliveryOrder(@ModelAttribute Delivery delivery,HttpServletRequest request, HttpSession session, ModelMap model) {
 		Account account = SessionUtility.getAccount(session);
 		AlertMessage successAlert = AlertMessage.DELIVER_ORDER_SUCCESS;
 		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
@@ -131,11 +166,161 @@ public class AdminController {
 			ordersManager.save(order);
 			LOGGER.info("OrderId {" + orderId + "} : Change order status from [" + order.getStatus() + "] to [" + status
 					+ "]");
-			model.addAttribute("alert", generatedAlert);
-			return "listAllOrder";
+			session.setAttribute("alert", generatedAlert);
+			return "redirect:"+SessionUtility.getPreviousPage(request);
 		}
-		model.addAttribute("alert", generatedAlert);
+		session.setAttribute("alert", generatedAlert);
+		return "redirect:index";
+	}
+
+	@RequestMapping(value = "/addBank", method = RequestMethod.GET)
+	public String addBank(HttpSession session, ModelMap model) {
+		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = null;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+
+		if (successAlert == generatedAlert) {
+			List<Bank> listBank = Arrays.asList(Bank.values());
+			List<BankType> listBankType = Arrays.asList(BankType.values());
+
+			model.addAttribute("listBank", listBank);
+			model.addAttribute("listBankType", listBankType);
+			model.addAttribute("listAllBank", bankAccountManager.findAll());
+			model.addAttribute("bankAccount", new BankAccount());
+			return "AddBank";
+		}
+		session.setAttribute("alert", generatedAlert);
 		return "index";
 	}
 
+	@RequestMapping(value = "/addBank", method = RequestMethod.POST)
+	public String addBank(@ModelAttribute BankAccount bankAccount, HttpSession session, ModelMap model) {
+		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = AlertMessage.ADD_BANK_SUCCESS;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+
+		if (successAlert == generatedAlert) {
+			List<Bank> listBank = Arrays.asList(Bank.values());
+			List<BankType> listBankType = Arrays.asList(BankType.values());
+
+			bankAccountManager.save(bankAccount);
+
+			model.addAttribute("listBank", listBank);
+			model.addAttribute("listBankType", listBankType);
+			model.addAttribute("listAllBank", bankAccountManager.findAll());
+			model.addAttribute("bankAccount", new BankAccount());
+			session.setAttribute("alert", generatedAlert);
+			return "AddBank";
+		}
+		session.setAttribute("alert", generatedAlert);
+		return "index";
+	}
+
+	@RequestMapping(value = "/listPaymentOrder", method = RequestMethod.GET)
+	public String listPaymentOrder(HttpSession session, ModelMap model) {
+		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = null;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+
+		if (successAlert == generatedAlert) {
+			HashMap<String, String> map = new HashMap<>();
+			model.addAttribute("listOrder",
+					ordersManager.findOrderByOrderStatus(OrderStatusUtilities.PENDING_VERIFICATION.getStatus(),
+							OrderStatusUtilities.PENDING_DELIVERY.getStatus()));
+
+			map.put("0", OrderStatusUtilities.PENDING_VERIFICATION.getStatus());
+			map.put("1", OrderStatusUtilities.PENDING_DELIVERY.getStatus());
+
+			model.addAttribute("mapStatus", map);
+			return "ListPaymentOrder";
+		}
+		session.setAttribute("alert", generatedAlert);
+		return "index";
+	}
+	
+	@RequestMapping(value = "/listDeliveryOrder", method = RequestMethod.GET)
+	public String listDeliveryOrder(HttpSession session, ModelMap model) {
+		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = null;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+
+		if (successAlert == generatedAlert) {
+			HashMap<String, String> map = new HashMap<>();
+			model.addAttribute("listOrder",
+					ordersManager.findOrderByOrderStatus(OrderStatusUtilities.PENDING_DELIVERY.getStatus(),
+							OrderStatusUtilities.DELIVERED.getStatus()));
+
+			map.put("0", OrderStatusUtilities.PENDING_DELIVERY.getStatus());
+			map.put("1", OrderStatusUtilities.DELIVERED.getStatus());
+
+			model.addAttribute("mapStatus", map);
+			model.addAttribute("delivery",new Delivery());
+			return "ListDeliveryOrder";
+		}
+		session.setAttribute("alert", generatedAlert);
+		return "index";
+	}
+	
+	@RequestMapping(value = "/printOrder/{orderId}", method = RequestMethod.GET)
+	public String printOrder(@PathVariable("orderId") int orderId,HttpSession session, ModelMap model){
+		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = null;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+
+		if (successAlert == generatedAlert) {
+			Orders order = ordersManager.findByOrderId(orderId);
+			model.addAttribute("order",order);
+			return "PrintOrder";
+		}
+		session.setAttribute("alert", generatedAlert);
+		return "../index";
+	}
+	@RequestMapping(value = "/listUser", method = RequestMethod.GET)
+	public String listUser(HttpSession session, ModelMap model){
+		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = null;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+
+		if (successAlert == generatedAlert) {
+			List<Account> listUser = accountRepository.findUserByExceptRole(UserRole.ADMIN.getRole());
+			HashMap<String,String> successOrder = new HashMap<>();
+			HashMap<String,String> totalPrice = new HashMap<>();
+			for(Account user : listUser){
+				int count = accountRepository.findCountOnStatusByUser(user.getAccountId(),OrderStatusUtilities.DELIVERED.getStatus());
+				successOrder.put(user.getAccountId()+"",""+count);
+				LOGGER.info("Count : "+count);
+				double total = 0;
+				for(Orders orders : ordersManager.findOrdersByAccountId(user.getAccountId())){
+					double amount = orders.calPrice();
+					LOGGER.info("Amount : "+amount);
+					total += amount;
+				}
+				totalPrice.put(user.getAccountId()+"", total+"");
+			}
+			
+			model.addAttribute("listUser",listUser);
+			model.addAttribute("mapSuccessOrder",successOrder);
+			model.addAttribute("mapTotalPrice",totalPrice);
+			return "ListUser";
+		}
+		session.setAttribute("alert", generatedAlert);
+		return "../index";
+	}
+	
+	@RequestMapping(value = "/UserDetail/{accountId}", method = RequestMethod.GET)
+	public String listUser(@PathVariable("accountId") int accountId,HttpSession session, ModelMap model){
+		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = null;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+
+		if (successAlert == generatedAlert) {
+			model.addAttribute("user",accountRepository.findByAccountId(accountId));
+			model.addAttribute("listDeliveredOrder",ordersManager.findOrderByOrderStatus(OrderStatusUtilities.DELIVERED.getStatus(),accountId));
+			model.addAttribute("listPaymentOrder",ordersManager.findOrderByOrderStatus(OrderStatusUtilities.PENDING_VERIFICATION.getStatus(),accountId));
+			model.addAttribute("listOrder",ordersManager.findOrderByOrderStatus(OrderStatusUtilities.DELIVERED.getStatus(), OrderStatusUtilities.PENDING_VERIFICATION.getStatus()));
+			return "UserDetail";
+		}
+		session.setAttribute("alert", generatedAlert);
+		return "../index";
+	}
 }
