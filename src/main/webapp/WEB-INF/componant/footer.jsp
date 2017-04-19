@@ -31,8 +31,7 @@
 				%>
 				<li class="menuNav"><a href="/index">หน้าแรก</a></li>
 				<li class="menuNav"><a href="/howTo">วิธีการสั่งซื้อ</a></li>
-				<li class="menuNav"><a href="#">เว็บบอร์ด</a></li>
-				<li class="menuNav"><a href="#">เกี่ยวกับเรา</a></li>
+				<li class="menuNav"><a href="/aboutUs">เกี่ยวกับเรา</a></li>
 				<li class="menuNav"><a href="#">ติดต่อเรา</a></li>
 				<%
 					} else if (user != null && user.getRole().equals(UserRole.USER.getRole())) {
@@ -42,8 +41,7 @@
 				<li class="menuNav"><a href="/howTo">วิธีการสั่งซื้อ</a></li>
 				<li class="menuNav"><a href="/myCart">ตะกร้าสินค้า</a></li>
 				<li class="menuNav"><a href="/confirmPayment">แจ้งการชำระเงิน</a></li>
-				<li class="menuNav"><a href="#">เว็บบอร์ด</a></li>
-				<li class="menuNav"><a href="#">เกี่ยวกับเรา</a></li>
+				<li class="menuNav"><a href="/aboutUs">เกี่ยวกับเรา</a></li>
 				<li class="menuNav"><a href="#">ติดต่อเรา</a></li>
 
 				<%

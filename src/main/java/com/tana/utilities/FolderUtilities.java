@@ -19,7 +19,7 @@ public class FolderUtilities {
 		if (!theDir.exists()) {
 			LOGGER.info("Creating directory: " + theDir.getName());
 			try {
-				theDir.mkdir();
+				theDir.mkdirs();
 				LOGGER.info("Created directory");
 			} catch (SecurityException se) {
 				LOGGER.info("Cann't create the folder : " + path);

@@ -12,6 +12,7 @@
 		$(document).ready(function() {
 			$('#shopDescription').val("${detail.shopDescription}");
 			$('#shopDetail').val("${detail.shopDetail}");
+			$('#address').val("${detail.address}");
 		});
 
 		function validateGenaralForm(frm) {
@@ -45,6 +46,11 @@
 			if (frm.email.value == "") {
 				alert("กรุณากรอกอีเมล");
 				frm.email.focus();
+				return false;
+			}
+			if (frm.address.value == "") {
+				alert("กรุณากรอกที่อยู่");
+				frm.address.focus();
 				return false;
 			}
 		}
@@ -100,7 +106,14 @@
 								value="${detail.email}" />
 						</div>
 					</div>
-
+					<div class="row">
+						<div class="col-md-2 header-sher">
+							<form:label path="address">ที่อยู่</form:label>
+						</div>
+						<div class="col-md-6">
+							<form:textarea path="address" class="form-control" ></form:textarea>
+						</div>
+					</div>
 				</c:when>
 				<c:otherwise>
 					<div class="row">
@@ -144,6 +157,15 @@
 						</div>
 						<div class="col-md-6">
 							<form:input path="email" class="form-control" />
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="col-md-2 header-sher">
+							<form:label path="address">ที่อยู่</form:label>
+						</div>
+						<div class="col-md-6">
+							<form:textarea path="address" class="form-control" ></form:textarea>
 						</div>
 					</div>
 				</c:otherwise>

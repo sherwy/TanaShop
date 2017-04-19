@@ -21,9 +21,14 @@ public class GeneralController extends HeaderController{
 	BankAccountRepository bankManager;
 	
 	@RequestMapping(value = "/howTo", method = RequestMethod.GET)
-	public String doAddCategory(HttpSession session, Model model) {
+	public String howTo(HttpSession session, Model model) {
 		model.addAttribute("listBank",bankManager.findAll());
 		return "HowTo";
+	}
+	
+	@RequestMapping(value = "/aboutUs", method = RequestMethod.GET)
+	public String aboutUs(HttpSession session, Model model) {
+		return "AboutUs";
 	}
 	
 }

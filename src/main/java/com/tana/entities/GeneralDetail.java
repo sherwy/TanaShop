@@ -21,11 +21,14 @@ public class GeneralDetail {
 	private String shopTelephone;
 	private String email;
 	private Date dateChanged;
+	private String address;
 	
 	public GeneralDetail(){}
 
+	
+
 	public GeneralDetail(long id, String shopName, String shopDescription, String shopDetail, String shopTelephone,
-			String email, Date dateChanged) {
+			String email, Date dateChanged, String address) {
 		super();
 		this.id = id;
 		this.shopName = shopName;
@@ -34,7 +37,10 @@ public class GeneralDetail {
 		this.shopTelephone = shopTelephone;
 		this.email = email;
 		this.dateChanged = dateChanged;
+		this.address = address;
 	}
+
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -101,6 +107,14 @@ public class GeneralDetail {
 	public void setDateChanged(Date dateChanged) {
 		this.dateChanged = dateChanged;
 	}
-	
-	
+
+
+	@Column(name="address")
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
 }
