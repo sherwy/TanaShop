@@ -1,9 +1,5 @@
 package com.tana.controller;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Date;
 
 import javax.servlet.http.HttpSession;
@@ -60,21 +56,14 @@ public class PaymentController extends HeaderController{
 			long orderId = order.getOrderId();
 			LOGGER.info("Found order id : " + order.getOrderId());
 
-			String fileName = null;
 
 			FolderUtilities.createFolderIfNotExist(VariableUtility.getPaymentPathFile(order.getOrderId()+""));
 
-			try {
-				byte[] bytes = file.getBytes();
-				fileName = orderId + "_" + payment.getId() + "_" + file.getOriginalFilename();
-				LOGGER.info("File name : " + fileName);
-				Path path = Paths.get(VariableUtility.getPaymentPathFile(order.getOrderId()+""));
-				Files.write(path, bytes);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			String url = FolderUtilities.uploadFile(file,
+					VariableUtility.getPaymentPathFile(order.getOrderId()+""),account.getAccountId()+"");
+
 			Date date = DateUtilities.convertStringToDateWithFormat(dateString, "yyyy-MM-dd");
-			payment.setImgUrl(fileName);
+			payment.setImgUrl(url);
 			payment.setPaymentDate(date);
 			paymentManager.save(payment);
 			LOGGER.info("Payment saved : OrderID {" + orderId + "}  ,   Payment {" + payment.getId() + "}");
