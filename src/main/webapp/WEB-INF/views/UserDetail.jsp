@@ -135,7 +135,7 @@
 												>${order.payment.bank.bankAccountNumber}</td>
 											<td>${order.otherAmount + order.calPrice() }</td>
 											<td>${order.datetime }</td>
-											<td>${order.order.id }</td>
+											<td>${order.orderId }</td>
 										</tr>
 									</c:forEach>
 								</tbody>

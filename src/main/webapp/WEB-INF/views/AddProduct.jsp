@@ -139,7 +139,7 @@
 
 			<div class="row">
 				<div class="col-md-2 header-sher">
-					<form:label path="amount">จำนวนสินค้า</form:label>
+					<form:label path="amount">สินค้าในคลัง</form:label>
 				</div>
 				<div class="col-md-3">
 					<div class="input-group">

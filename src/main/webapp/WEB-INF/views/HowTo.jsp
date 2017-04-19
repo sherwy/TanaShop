@@ -6,8 +6,11 @@
 	pageEncoding="UTF-8"%>
 
 
-<b>วิธีการสั่งซื้อ</b>
-
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<div class="nav-header">
+	<b>วิธีการสั่งซื้อ</b>
+</div>
+<br>
 <ul class="media-list">
 	<li class="media">
 		<div class="pull-left">
@@ -66,7 +69,8 @@
 		</div>
 		<div class="media-body">
 			<h4 class="media-heading">รอการตรวจสอบ</h4>
-			รอทางร้านตรวจสอบรายการชำระเงินภายใน 1-2 วัน โดยสามารถตรวจสอบสถานะได้ที่ "ตรวจสอบสถานะสินค้า"
+			รอทางร้านตรวจสอบรายการชำระเงินภายใน 1-2 วัน
+			โดยสามารถตรวจสอบสถานะได้ที่ "ตรวจสอบสถานะสินค้า"
 		</div>
 	</li>
 	<li class="media">
@@ -80,7 +84,36 @@
 		</div>
 	</li>
 </ul>
+<div class="nav-header">
+	<b>วิธีการชำระเงิน</b>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<table class="table table-hover">
+			<tr>
+				<th>ลำดับ</th>
+				<th>ธนาคาร</th>
+				<th>เลขที่่บัญชี</th>
+				<th>ชื่อบัญชี</th>
+				<th>สาขา</th>
+				<th>ประเภท</th>
+			</tr>
+			<c:forEach items="${listBank }" var="bank" varStatus="index">
+				<tr>
+					<td>${index.index+1 }</td>
+					<td>${bank.bankName }</td>
+					<td>${bank.bankAccountNumber }</td>
+					<td>${bank.bankAccountName }</td>
+					<td>${bank.branch }</td>
+					<td>${bank.bankAccountType }</td>
+				</tr>
+			</c:forEach>
+		</table>
+	</div>
+</div>
 
+
+<br>
 
 
 <jsp:include page="../componant/footer.jsp" flush="true" />

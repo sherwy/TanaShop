@@ -95,7 +95,7 @@ public class Product implements java.io.Serializable {
 
 
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="category_id",nullable=false)
+	@JoinColumn(name="category_id")
 	@JsonManagedReference
 	public OrderCategory getCategory() {
 		return category;

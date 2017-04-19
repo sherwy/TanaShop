@@ -2,6 +2,9 @@ package com.tana.Repositories;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -22,4 +25,14 @@ public interface ProductRepository  extends CrudRepository<Product,Long>{
 	
 	@Query(value="SELECT * FROM product p  WHERE p.status <> ?1",nativeQuery=true)
 	List<Product> findProductExceptStatus(String status);
+	
+	@Transactional
+	@Modifying
+	@Query(value = "UPDATE product SET category_id = ?2 WHERE product_id = ?1",nativeQuery = true)
+	void updateProductCategoryByProductId(long productId,long categoryId);
+	
+	@Transactional
+	@Modifying
+	@Query(value = "UPDATE product SET category_id = null WHERE product_id = ?1",nativeQuery = true)
+	void updateProductCategoryToNullByProductId(long productId);
 }

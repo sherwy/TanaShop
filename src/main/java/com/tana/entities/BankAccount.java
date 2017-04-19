@@ -16,6 +16,7 @@ import javax.persistence.Table;
 public class BankAccount {
 	private long id;
 	private String bankName;
+	private String branch;
 	private String bankAccountName;
 	private String bankAccountNumber;
 	private String bankAccountType;
@@ -88,6 +89,16 @@ public class BankAccount {
 
 	public void setPayment(List<Payment> payment) {
 		this.payment = payment;
+	}
+
+	
+	@Column(name = "branch",nullable = false)
+	public String getBranch() {
+		return branch;
+	}
+
+	public void setBranch(String branch) {
+		this.branch = branch;
 	}
 	
 	

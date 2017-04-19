@@ -158,7 +158,6 @@
 						%>
 						<li class="menuNav"><a href="/index">หน้าแรก</a></li>
 						<li class="menuNav"><a href="/howTo">วิธีการสั่งซื้อ</a></li>
-						<li class="menuNav"><a href="#">เว็บบอร์ด</a></li>
 						<li class="menuNav"><a href="#">เกี่ยวกับเรา</a></li>
 						<li class="menuNav"><a href="#">ติดต่อเรา</a></li>
 						<%
@@ -169,7 +168,6 @@
 						<li class="menuNav"><a href="/howTo">วิธีการสั่งซื้อ</a></li>
 						<li class="menuNav"><a href="/myCart">ตะกร้าสินค้า</a></li>
 						<li class="menuNav"><a href="/confirmPayment">แจ้งการชำระเงิน</a></li>
-						<li class="menuNav"><a href="#">เว็บบอร์ด</a></li>
 						<li class="menuNav"><a href="#">เกี่ยวกับเรา</a></li>
 						<li class="menuNav"><a href="#">ติดต่อเรา</a></li>
 
@@ -241,7 +239,6 @@
 						</a>
 							<ul class="menuNavBlock-inside dropdown-menu">
 								<li class="menuNav-inside"><a href="#">รายการติดต่อจากลูกค้า</a></li>
-								<li class="menuNav-inside"><a href="#">เว็บบอร์ด</a></li>
 								<li class="menuNav-inside"><a href="/listUser">รายชื่อลูกค้า</a></li>
 							</ul></li>
 						</li>

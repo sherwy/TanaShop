@@ -215,6 +215,21 @@ public class AdminController extends HeaderController {
 		session.setAttribute("alert", generatedAlert);
 		return "index";
 	}
+	
+	@RequestMapping(value = "/editBank", method = RequestMethod.POST)
+	public String editBank(@ModelAttribute BankAccount bankAccount,HttpServletRequest request, HttpSession session, ModelMap model) {
+		Account account = SessionUtility.getAccount(session);
+		AlertMessage successAlert = AlertMessage.EDIT_BANK_SUCCESS;
+		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
+
+		if (successAlert == generatedAlert) {
+			bankAccountManager.save(bankAccount);
+			session.setAttribute("alert", generatedAlert);
+			return "redirect:"+SessionUtility.getPreviousPage(request);
+		}
+		session.setAttribute("alert", generatedAlert);
+		return "index";
+	}
 
 	@RequestMapping(value = "/listPaymentOrder", method = RequestMethod.GET)
 	public String listPaymentOrder(HttpSession session, ModelMap model) {
@@ -318,6 +333,7 @@ public class AdminController extends HeaderController {
 			model.addAttribute("listDeliveredOrder",ordersManager.findOrderByOrderStatus(OrderStatusUtilities.DELIVERED.getStatus(),accountId));
 			model.addAttribute("listPaymentOrder",ordersManager.findOrderByOrderStatus(OrderStatusUtilities.PENDING_VERIFICATION.getStatus(),accountId));
 			model.addAttribute("listOrder",ordersManager.findOrderByOrderStatus(OrderStatusUtilities.DELIVERED.getStatus(), OrderStatusUtilities.PENDING_VERIFICATION.getStatus()));
+
 			return "UserDetail";
 		}
 		session.setAttribute("alert", generatedAlert);
