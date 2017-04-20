@@ -71,7 +71,8 @@
 			</div>
 		</script>
 </head>
-<body>
+<body
+	style="background : url('../../Images/AboutUs/<%=general.getImgUrl()%>')  no-repeat center center fixed; background-size:100% 100%;">
 
 	<script language="JavaScript">
 		function validateLogin(frm) {

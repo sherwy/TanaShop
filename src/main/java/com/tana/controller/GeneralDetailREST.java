@@ -57,6 +57,7 @@ public class GeneralDetailREST {
 			detail.setShopName("Tana");
 			detail.setShopDetail("EverydayKPop shop");
 			detail.setShopDescription("Korean");
+			detail.setImgUrl("/Images/banner/banner.jpg");
 			try {
 				detail.setDateChanged(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z").parse(new Date().toString()));
 			} catch (ParseException e) {
