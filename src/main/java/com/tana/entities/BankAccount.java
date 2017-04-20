@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "bank_account", catalog = "tana_shopping")
 public class BankAccount {
@@ -83,6 +85,7 @@ public class BankAccount {
 	}
 
 	@OneToMany(fetch = FetchType.EAGER,mappedBy="bank")
+	@JsonManagedReference
 	public List<Payment> getPayment() {
 		return payment;
 	}

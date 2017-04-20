@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @SuppressWarnings("serial")
@@ -102,7 +103,7 @@ public class Account implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
-	@JsonManagedReference
+	@JsonBackReference
 	public List<Orders> getListOrder() {
 		return listOrder;
 	}
@@ -157,7 +158,7 @@ public class Account implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "msgOwner")
-	@JsonManagedReference
+	@JsonBackReference
 	public List<ContactMessage> getListContactMsg() {
 		return listContactMsg;
 	}
@@ -167,7 +168,7 @@ public class Account implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "msgOwner")
-	@JsonManagedReference
+	@JsonBackReference
 	public List<ReplyMessage> getListReplyMsg() {
 		return listReplyMsg;
 	}

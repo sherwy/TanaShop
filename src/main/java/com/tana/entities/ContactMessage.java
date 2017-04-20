@@ -14,6 +14,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "contact_msg", catalog = "tana_shopping")
@@ -60,7 +61,7 @@ public class ContactMessage {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "account_id", nullable = false)
-	@JsonBackReference
+	@JsonManagedReference
 	public Account getMsgOwner() {
 		return msgOwner;
 	}
@@ -89,6 +90,7 @@ public class ContactMessage {
 
 	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="reply_id")
+	@JsonManagedReference
 	public ReplyMessage getReplyMsg() {
 		return replyMsg;
 	}

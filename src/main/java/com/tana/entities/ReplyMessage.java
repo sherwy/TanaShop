@@ -67,6 +67,7 @@ public class ReplyMessage {
 	}
 
 	@OneToOne(fetch=FetchType.LAZY, mappedBy="replyMsg")
+	@JsonBackReference
 	public ContactMessage getIssueMsg() {
 		return issueMsg;
 	}

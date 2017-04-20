@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @SuppressWarnings("serial")
@@ -91,6 +92,7 @@ public class Payment implements java.io.Serializable {
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="bank_id")
+	@JsonBackReference
 	public BankAccount getBank() {
 		return bank;
 	}

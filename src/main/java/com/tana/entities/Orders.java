@@ -71,7 +71,7 @@ public class Orders implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.orders", cascade = CascadeType.ALL)
-	@JsonManagedReference
+	@JsonBackReference
 	public List<OrderLine> getListProduct() {
 		return listProduct;
 	}
@@ -100,7 +100,7 @@ public class Orders implements java.io.Serializable {
 	}
 	
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JsonBackReference
+	@JsonManagedReference
 	public Delivery getDelivery() {
 		return delivery;
 	}
