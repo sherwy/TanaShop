@@ -1,6 +1,7 @@
 package com.tana.controller;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -343,18 +344,22 @@ public class AdminController extends HeaderController {
 		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
 
 		if (successAlert == generatedAlert) {
-			System.out.println("AAAAA");
 			model.addAttribute("user", accountRepository.findByAccountId(accountId));
-			System.out.println("AAAAA");
-			model.addAttribute("listDeliveredOrder",
-					ordersManager.findOrderByOrderStatus(OrderStatusUtilities.DELIVERED.getStatus(), accountId));
-			System.out.println("AAAAA");
-			model.addAttribute("listPaymentOrder", ordersManager
-					.findOrderByOrderStatus(OrderStatusUtilities.PENDING_VERIFICATION.getStatus(), accountId));
-			System.out.println("AAAAA");
-			model.addAttribute("listOrder", ordersManager.findOrderByOrderStatus(
-					OrderStatusUtilities.DELIVERED.getStatus(), OrderStatusUtilities.PENDING_VERIFICATION.getStatus()));
-			System.out.println("AAAAA");
+			List<Orders> listDeliverOrders = ordersManager.findOrderByOrderStatus(OrderStatusUtilities.DELIVERED.getStatus(), accountId);
+			List<Orders> listPaymentOrder = ordersManager .findOrderByOrderStatus(OrderStatusUtilities.PENDING_VERIFICATION.getStatus(), accountId);
+			model.addAttribute("listDeliveredOrder",listDeliverOrders);
+			model.addAttribute("listPaymentOrder",listPaymentOrder);
+			
+			List<Orders> listOrder = new ArrayList<>();
+			
+			for(Orders payment : listPaymentOrder){
+				listOrder.add(payment);
+			}
+			for(Orders delivery : listDeliverOrders){
+				listOrder.add(delivery);
+			}
+			
+			model.addAttribute("listOrder", listOrder);
 			return "UserDetail";
 		}
 		session.setAttribute("alert", generatedAlert);
