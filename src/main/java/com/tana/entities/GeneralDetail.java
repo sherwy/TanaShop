@@ -22,13 +22,14 @@ public class GeneralDetail {
 	private String email;
 	private Date dateChanged;
 	private String address;
+	private String imgUrl;
 	
 	public GeneralDetail(){}
 
 	
 
 	public GeneralDetail(long id, String shopName, String shopDescription, String shopDetail, String shopTelephone,
-			String email, Date dateChanged, String address) {
+			String email, Date dateChanged, String address, String imgUrl) {
 		super();
 		this.id = id;
 		this.shopName = shopName;
@@ -38,6 +39,7 @@ public class GeneralDetail {
 		this.email = email;
 		this.dateChanged = dateChanged;
 		this.address = address;
+		this.imgUrl = imgUrl;
 	}
 
 
@@ -117,4 +119,15 @@ public class GeneralDetail {
 	public void setAddress(String address) {
 		this.address = address;
 	}
+
+	@Column(name="imgUrl")
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
+	
+	
 }

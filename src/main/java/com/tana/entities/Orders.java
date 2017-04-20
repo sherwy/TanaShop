@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @SuppressWarnings("serial")
 @Entity
@@ -70,6 +71,7 @@ public class Orders implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "pk.orders", cascade = CascadeType.ALL)
+	@JsonManagedReference
 	public List<OrderLine> getListProduct() {
 		return listProduct;
 	}

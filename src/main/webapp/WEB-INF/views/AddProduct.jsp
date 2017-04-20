@@ -12,7 +12,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<b>เพิ่มสินค้า</b>
+<div class="nav-header">
+	<b>เพิ่มสินค้า</b>
+</div>
 <br>
 <div class="form-group">
 	<script >

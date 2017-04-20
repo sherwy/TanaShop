@@ -54,7 +54,7 @@
 										class="glyphicon glyphicon-share-alt "></span></a>
 								</c:when>
 								<c:when test="${order.status == mapStatus.get('1') }">
-										class="glyphicon glyphicon-ok "></span></a>
+
 									<a href="#" data-balloon="ยืนยันการชำระเงินเรียบร้อยแล้ว"
 										data-balloon-pos="down" class="success"><span class="glyphicon glyphicon-ok"></span></a>
 								</c:when>

@@ -2,6 +2,8 @@ package com.tana.entities;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @SuppressWarnings("serial")
 @Embeddable
 public class OrderLineId implements java.io.Serializable{
@@ -17,6 +19,7 @@ public class OrderLineId implements java.io.Serializable{
 	}
 
 	@ManyToOne
+	@JsonBackReference
 	public Orders getOrders() {
 		return orders;
 	}
@@ -26,6 +29,7 @@ public class OrderLineId implements java.io.Serializable{
 	}
 
 	@ManyToOne
+	@JsonBackReference
 	public Product getProduct() {
 		return product;
 	}

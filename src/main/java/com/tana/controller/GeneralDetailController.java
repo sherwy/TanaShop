@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.tana.Repositories.GeneralDetailRepository;
 import com.tana.Repositories.WelcomeDetailRepository;
@@ -17,8 +18,10 @@ import com.tana.entities.Account;
 import com.tana.entities.GeneralDetail;
 import com.tana.entities.WelcomeDetail;
 import com.tana.utilities.AlertMessage;
+import com.tana.utilities.FolderUtilities;
 import com.tana.utilities.SessionUtility;
 import com.tana.utilities.UserRole;
+import com.tana.utilities.VariableUtility;
 
 @Controller
 public class GeneralDetailController extends HeaderController{
@@ -49,13 +52,16 @@ public class GeneralDetailController extends HeaderController{
 	}
 	
 	@RequestMapping(value="/editGeneralDetail",method=RequestMethod.POST)
-	public String editGeneralDetail(@ModelAttribute GeneralDetail generalDetail ,HttpSession session,Model model){
+	public String editGeneralDetail(@ModelAttribute GeneralDetail generalDetail ,@RequestParam("file") MultipartFile file,HttpSession session,Model model){
 		Account account = SessionUtility.getAccount(session);
 		AlertMessage successAlert = AlertMessage.EDIT_GENERAL_DETAIL_SUCCESS;
 		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
 		
 		if(successAlert == generatedAlert){
 			generalDetail.setDateChanged(new Date());
+			String url = FolderUtilities.uploadFile(file,
+					VariableUtility.getAboutUsPathFile(),"aboutus");
+			generalDetail.setImgUrl(url);
 			generalDetailManager.save(generalDetail);
 		}
 		model.addAttribute("alert",generatedAlert);

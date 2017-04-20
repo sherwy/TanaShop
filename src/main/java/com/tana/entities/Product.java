@@ -85,6 +85,7 @@ public class Product implements java.io.Serializable {
 	}
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="pk.product")
+	@JsonManagedReference
 	public List<OrderLine> getListOrder() {
 		return listOrder;
 	}

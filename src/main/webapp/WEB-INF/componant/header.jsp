@@ -131,7 +131,9 @@
 
 		<!--  banner -->
 		<div class="row headerbanner">
-			<marquee><%=welcome.getWelcomeText()%></marquee>
+			<div class="welcome-text">
+				<marquee><%=welcome.getWelcomeText()%></marquee>
+			</div>
 		</div>
 
 		<!-- nav -->
@@ -449,7 +451,16 @@
 
 					<hr />
 				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<a href="http://track.thailandpost.co.th/tracking/default.aspx"
+							target="_blank"><img src="\Images\banner\thai-post.gif"
+							height="200px" /></a>
+					</div>
+				</div>
 			</div>
+
+
 
 			<!-- content -->
 			<div class="col-md-9 content-body">

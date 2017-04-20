@@ -7,6 +7,10 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<div class="nav-header">
+	<b>เกี่ยวกับร้าน</b>
+</div>
+<br>
 <div class="form-group">
 	<script>
 		$(document).ready(function() {
@@ -53,10 +57,21 @@
 				frm.address.focus();
 				return false;
 			}
+			if (frm.file.value != "") {
+				var reg = /^.+(\.jpg|\.JPG|\.jpeg|\.JPEG|\.png|\.PNG)$/;
+				if (!reg.test(frm.file.value)) {
+					alert("กรุณาเลือกรูปภาพที่มีนามสกุล .jpg , .jpeg หรือ .png เท่านั้น");
+					return false;
+				}
+				if (frm.file.files[0].size >= 1048576) {
+					alert("กรุณาเลือกรูปภาพที่มีขนาดไฟล์น้อยกว่า 1MB");
+					return false;
+				}
+			}
 		}
 	</script>
 	<form:form action="/editGeneralDetail" method="POST"
-		modelAttribute="generalDetail">
+		modelAttribute="generalDetail"  enctype="multipart/form-data">
 		<div class="form-sher">
 			<c:choose>
 				<c:when test="${detail != null }">
@@ -111,7 +126,17 @@
 							<form:label path="address">ที่อยู่</form:label>
 						</div>
 						<div class="col-md-6">
-							<form:textarea path="address" class="form-control" ></form:textarea>
+							<form:textarea path="address" class="form-control"></form:textarea>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-2 header-sher">
+							<form:label path="imgUrl">รูปภาพ</form:label>
+						</div>
+						<div class="col-md-3">
+							<input name="file" id="file" type="file" class="form-control"
+								value="${detail.imgUrl }" />
+							<form:hidden path="imgUrl" value="${detail.imgUrl }" />
 						</div>
 					</div>
 				</c:when>
@@ -159,15 +184,26 @@
 							<form:input path="email" class="form-control" />
 						</div>
 					</div>
-					
+
 					<div class="row">
 						<div class="col-md-2 header-sher">
 							<form:label path="address">ที่อยู่</form:label>
 						</div>
 						<div class="col-md-6">
-							<form:textarea path="address" class="form-control" ></form:textarea>
+							<form:textarea path="address" class="form-control"></form:textarea>
 						</div>
 					</div>
+					<div class="row">
+						<div class="col-md-2 header-sher">
+							<form:label path="imgUrl">รูปภาพ</form:label>
+						</div>
+						<div class="col-md-3">
+							<input name="file" id="file" type="file" class="form-control"
+								value="${account.imgUrl }" />
+							<form:hidden path="imgUrl"  />
+						</div>
+					</div>
+					
 				</c:otherwise>
 			</c:choose>
 

@@ -10,6 +10,7 @@ import com.tana.entities.Account;
 public interface AccountRepository extends JpaRepository<Account,Long>{
 	List<Account> findAll();
 	
+	@Query(value="SELECT * FROM account WHERE account_id = ?1",nativeQuery=true)
 	Account findByAccountId(long id);
 	
 	Account findByUsername(String username);

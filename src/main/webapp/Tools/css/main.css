@@ -16,6 +16,18 @@ a {
 	float:right;
 }
 
+.headerbanner .welcome-text{
+	position: absolute;
+    bottom: 0;
+    background-color:#FFFFFF;
+    opacity: 0.2;
+    width:100%;
+}
+
+.headerbanner .welcome-text marquee{
+	opacity:1;
+}
+
 .footerBlock{
 	background-color:#000000;
 }
@@ -144,7 +156,7 @@ body .container {
 }
 
 .card-content .card-title b {
-	font-size: 180%;
+	font-size: 120%;
 }
 
 .card-price {
@@ -294,6 +306,7 @@ body .container {
 }
 
 .headerbanner {
+	position:relative;
 	background: url("../../Images/banner/header.jpg") no-repeat center
 		center;
 	background-size: cover;
