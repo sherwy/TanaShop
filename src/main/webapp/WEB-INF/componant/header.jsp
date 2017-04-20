@@ -18,9 +18,11 @@
 <%
 	String generalDetailJson = JsonReader.readUrl("http://localhost:8081/rest/generalDetailShop");
 	String welcomeDetailJson = JsonReader.readUrl("http://localhost:8081/rest/welcomeDetail");
+	String configJson = JsonReader.readUrl("http://localhost:8081/rest/configWeb");
 	Gson gson = new Gson();
 	GeneralDetail general = gson.fromJson(generalDetailJson, GeneralDetail.class);
 	WelcomeDetail welcome = gson.fromJson(welcomeDetailJson, WelcomeDetail.class);
+	ConfigWeb configWeb = gson.fromJson(configJson, ConfigWeb.class);
 
 	AlertMessage alert = (AlertMessage) session.getAttribute("alert");
 	if (alert != null) {
@@ -72,7 +74,7 @@
 		</script>
 </head>
 <body
-	style="background : url('../../Images/AboutUs/<%=general.getImgUrl()%>')  no-repeat center center fixed; background-size:100% 100%;">
+	style="background : url('../../Images/background/<%=configWeb.getBgImg()%>')  no-repeat center center fixed; background-size:100% 100%;">
 
 	<script language="JavaScript">
 		function validateLogin(frm) {
@@ -131,9 +133,11 @@
 		%>
 
 		<!--  banner -->
-		<div class="row headerbanner">
+		<div class="row headerbanner"
+			style="background : url('../../Images/Bannner/<%=configWeb.getBannerImg()%>')  no-repeat center center; background-size:100% 100%;">
+			>
 			<div class="welcome-text">
-				<marquee><%=welcome.getWelcomeText()%></marquee>
+				<marquee style="font-size: 300%"><%=welcome.getWelcomeText()%></marquee>
 			</div>
 		</div>
 
@@ -163,6 +167,7 @@
 						<li class="menuNav"><a href="/index">หน้าแรก</a></li>
 						<li class="menuNav"><a href="/howTo">วิธีการสั่งซื้อ</a></li>
 						<li class="menuNav"><a href="/aboutUs">เกี่ยวกับเรา</a></li>
+
 
 						<%
 							} else if (user != null && user.getRole().equals(UserRole.USER.getRole())) {
@@ -211,6 +216,7 @@
 							<ul class="menuNavBlock-inside dropdown-menu">
 								<li class="menuNav-inside"><a href="/editGeneralDetail">เกี่ยวกับร้าน</a></li>
 								<li class="menuNav-inside"><a href="/welcomeDetail">ข้อความต้อนรับ</a></li>
+								<li class="menuNav-inside"><a href="/configWeb">ปรับแต่ง</a></li>
 							</ul></li>
 						<li class="menuNav-admin"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -354,7 +360,8 @@
 							role="button">ออกจากระบบ</a>
 					</div>
 					<%
-						if (UserRole.USER.isRole(user)) {
+						
+						if (UserRole.USER.isRole(user) && !"true".equals(isAdminView)) {
 					%>
 					<div class="col-md-6">
 						<a href="/editProfile" class="btn btn-success buttonFooter"
@@ -434,7 +441,7 @@
 							<c:forEach items="${listNavCategory }" var="category">
 								<div class="row child-nav">
 									<div class="col-md-12">
-										<a href="/listProductByCategory/${category.categoryId}">${category.categoryName }</a>
+										<a href="#">${category.categoryName }</a>
 
 										<c:forEach items="${category.listChildCategory }"
 											var="categoryChild">
@@ -456,9 +463,17 @@
 					<div class="col-md-12">
 						<a href="http://track.thailandpost.co.th/tracking/default.aspx"
 							target="_blank"><img src="\Images\banner\thai-post.gif"
-							height="200px" /></a>
+							width="250px" /></a>
 					</div>
 				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<a href="/listTracking"><img
+							src="\Images\banner\tracking.jpg" width="250px" /></a>
+					</div>
+				</div>
+
+
 			</div>
 
 

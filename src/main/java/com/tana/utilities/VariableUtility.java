@@ -11,6 +11,8 @@ public class VariableUtility {
 	private static String IMG_PATH_PAYMENT = "/src/main/webapp/Images/Payment/";
 	private static String IMG_PATH_ABOUTUS = "/src/main/webapp/Images/AboutUs/";
 	private static String IMG_PATH_GENERAL = "/src/main/webapp/Images/General/";
+	private static String IMG_PATH_BANNER = "/src/main/webapp/Images/Bannner/";
+	private static String IMG_PATH_BG = "/src/main/webapp/Images/background/";
 	
 	public static String getProductPathFile(String productId){
 		String path = getCurrentDir()+IMG_PATH_PRODUCTS+productId+"/";
@@ -36,8 +38,18 @@ public class VariableUtility {
 		return path;
 	}
 	
-	public static String getGeneralPathFile(String orderId){
+	public static String getGeneralPathFile(){
 		String path = getCurrentDir()+IMG_PATH_GENERAL;
+		LOGGER.info("Get payment path file : "+path);
+		return path;
+	}
+	public static String getBannerPathFile(){
+		String path = getCurrentDir()+IMG_PATH_BANNER;
+		LOGGER.info("Get payment path file : "+path);
+		return path;
+	}
+	public static String getBackgroundPathFile(){
+		String path = getCurrentDir()+IMG_PATH_BG;
 		LOGGER.info("Get payment path file : "+path);
 		return path;
 	}

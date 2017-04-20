@@ -29,6 +29,7 @@ import com.tana.entities.OrderLine;
 import com.tana.entities.Product;
 import com.tana.utilities.AlertMessage;
 import com.tana.utilities.FolderUtilities;
+import com.tana.utilities.OrderStatusUtilities;
 import com.tana.utilities.ProductStatusUtilities;
 import com.tana.utilities.SessionUtility;
 import com.tana.utilities.UserRole;
@@ -99,6 +100,7 @@ public class ProductController extends HeaderController {
 
 			model.addAttribute("listCategory", categoryManager.findParentCategory());
 			model.addAttribute("listProdStatus", listProductStatus());
+			model.addAttribute("alert", generatedAlert);
 			return "AddProduct";
 
 		}
@@ -109,20 +111,20 @@ public class ProductController extends HeaderController {
 
 	@RequestMapping(value = "/listProduct/{operation}", method = RequestMethod.GET)
 	public String doListProduct(@PathVariable("operation") String operation, HttpSession session, ModelMap model) {
-		LOGGER.info("Operation <List prod> : "+operation);
+		LOGGER.info("Operation <List prod> : " + operation);
 		Account account = SessionUtility.getAccount(session);
 		List<Product> listProduct = null;
-		if("recommended".equals(operation)){
+		if ("recommended".equals(operation)) {
 			listProduct = productManager.findProductByStatus(ProductStatusUtilities.RECOMMENDED_PROD.getStatus());
-			model.addAttribute("titleHeader","สินค้าแนะนำ");
-		}else if("new".equals(operation)){
+			model.addAttribute("titleHeader", "สินค้าแนะนำ");
+		} else if ("new".equals(operation)) {
 			listProduct = productManager.findProductByStatus(ProductStatusUtilities.NEW_PROD.getStatus());
-			model.addAttribute("titleHeader","สินค้าค้าใหม่");
-		}else if("all".equals(operation)){
+			model.addAttribute("titleHeader", "สินค้าค้าใหม่");
+		} else if ("all".equals(operation)) {
 			listProduct = productManager.findProductExceptStatus(ProductStatusUtilities.DELETED.getStatus());
-			model.addAttribute("titleHeader","สินค้าทั้งหมด");
+			model.addAttribute("titleHeader", "สินค้าทั้งหมด");
 		}
-			
+
 		if (listProduct != null) {
 			HashMap<Long, String> prodInCart = new HashMap<>();
 			if (account != null) {
@@ -145,13 +147,13 @@ public class ProductController extends HeaderController {
 			model.addAttribute("listProd", listProduct);
 			return "ListProduct";
 		}
-		model.addAttribute("alert",AlertMessage.INVALID_PAGE);
+		model.addAttribute("alert", AlertMessage.INVALID_PAGE);
 		return "index";
 	}
-	
+
 	@RequestMapping(value = "/listProductByCategory/{categoryId}", method = RequestMethod.GET)
 	public String doListProduct(@PathVariable("categoryId") int categoryIdArgs, HttpSession session, ModelMap model) {
-		LOGGER.info("Category Id <List prod by cat> : "+categoryIdArgs);
+		LOGGER.info("Category Id <List prod by cat> : " + categoryIdArgs);
 		Account account = SessionUtility.getAccount(session);
 		List<Product> listProduct = productManager.findProductByCategoryId(categoryIdArgs);
 		OrderCategory category = categoryManager.findCategoryById(categoryIdArgs);
@@ -171,7 +173,7 @@ public class ProductController extends HeaderController {
 				}
 			}
 		}
-		model.addAttribute("titleHeader","สินค้าตามหมวดหมู่ ("+category.getCategoryName()+")");
+		model.addAttribute("titleHeader", "สินค้าตามหมวดหมู่ (" + category.getCategoryName() + ")");
 		model.addAttribute("prodInCart", prodInCart);
 		model.addAttribute("listProd", listProduct);
 		return "ListProduct";
@@ -197,7 +199,7 @@ public class ProductController extends HeaderController {
 		LOGGER.info("Product id '" + productId + "' has requested to edit");
 		Account account = SessionUtility.getAccount(session);
 
-		AlertMessage successAlert = null;
+		AlertMessage successAlert = AlertMessage.EDIT_PROD_SUCCESS;
 		AlertMessage generatedAlert = AlertMessage.generateAlertMsg(UserRole.ADMIN, account, successAlert);
 
 		if (successAlert == generatedAlert) {
@@ -205,6 +207,7 @@ public class ProductController extends HeaderController {
 			model.addAttribute("listCategory", categoryManager.findParentCategory());
 			model.addAttribute("product", product);
 			model.addAttribute("listProdStatus", listProductStatus());
+			model.addAttribute("alert", generatedAlert);
 			return "EditProduct";
 		}
 		model.addAttribute("alert", generatedAlert);
@@ -235,5 +238,41 @@ public class ProductController extends HeaderController {
 		model.addAttribute("alert", generatedAlert);
 		return "index";
 
+	}
+
+	@RequestMapping(value = "/listTracking", method = RequestMethod.GET)
+	public String listTracking(HttpSession session, ModelMap model) {
+		List<Orders> listOrder = ordersManager.findOrderByOrderStatusOnExcept(OrderStatusUtilities.CART.getStatus());
+		model.addAttribute("listOrder", listOrder);
+		return "ListTracking";
+	}
+
+	@RequestMapping(value = "/search", method = RequestMethod.POST)
+	public String searchProduct(@RequestParam("search") String keyword,HttpSession session, ModelMap model) {
+		Account account = SessionUtility.getAccount(session);
+		List<Product> listProduct = null;
+		listProduct = productManager.findProductLikeName(keyword);
+		model.addAttribute("titleHeader", "สินค้าที่มีชื่อ \""+keyword+"\"");
+
+		HashMap<Long, String> prodInCart = new HashMap<>();
+		if (account != null) {
+			Orders orders = ordersManager.findCartByAccountId(account.getAccountId());
+
+			if (orders != null) {
+				for (Product product : listProduct) {
+					for (OrderLine orderLine : orders.getListProduct()) {
+						Product cartProduct = orderLine.getPk().getProduct();
+						if (product.getProductId() == cartProduct.getProductId()) {
+							prodInCart.put(product.getProductId(), product.getProductName());
+							LOGGER.info("Product (" + product.getProductId() + ") is already in cart");
+							break;
+						}
+					}
+				}
+			}
+		}
+		model.addAttribute("prodInCart", prodInCart);
+		model.addAttribute("listProd", listProduct);
+		return "ListProduct";
 	}
 }

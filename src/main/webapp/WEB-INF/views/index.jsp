@@ -9,6 +9,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ page import="com.tana.entities.*"%>
 <%@ page import="com.tana.utilities.*"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <%@ page import="java.util.*"%>
 <%@page import="com.google.gson.Gson"%>
@@ -18,10 +19,9 @@
 	GeneralDetail general = gson.fromJson(generalDetailJson, GeneralDetail.class);
 	Account user = (Account) session.getAttribute("user");
 	if (user != null) {
-		HashMap<String,String> prodInCart = JsonReader.getCart(user.getAccountId()+"");
-		request.setAttribute("prodInCart",prodInCart);
+		HashMap<String, String> prodInCart = JsonReader.getCart(user.getAccountId() + "");
+		request.setAttribute("prodInCart", prodInCart);
 	}
-
 %>
 <div class="row about-shop">
 	<div class="panel panel-default">
@@ -33,7 +33,21 @@
 		</div>
 	</div>
 </div>
-<c:set var="prodInCart" value="${requestScope.prodInCart }"/>
+<div class="form-group" style="float: right">
+	<div class="form-sher">
+		<form:form class="form-inline" action="/search" method="POST">
+
+			<input name="search" class="form-control"
+				placeholder="ค้นหาชื่อสินค้าได้ที่นี่ !" />
+
+			<input type="submit" class="btn btn-info" value="ค้นหา !" />
+
+
+		</form:form>
+
+	</div>
+</div>
+<c:set var="prodInCart" value="${requestScope.prodInCart }" />
 <div class="row">
 	<b style="font-size: 36px;">สินค้าใหม่</b> <a class="viewAll-sher"
 		href="/listProduct/new"> <span class="glyphicon glyphicon-search"></span>
@@ -70,7 +84,8 @@
 								if (user != null && UserRole.USER.isRole(user)) {
 							%>
 							<c:choose>
-								<c:when test="${prodInCart.containsKey(newProd.productId += '')}">
+								<c:when
+									test="${prodInCart.containsKey(newProd.productId += '')}">
 									<div class="add-to-cart">
 										<a href="#" data-balloon="สินค้าอยู๋ในตะกร้าแล้ว"
 											data-balloon-pos="right"><span
@@ -88,7 +103,7 @@
 							<%
 								}
 							%>
-							
+
 							<div class="card-content">
 								<div class="card-title">
 									<h4>
@@ -112,7 +127,7 @@
 
 								</div>
 							</div>
-							
+
 						</div>
 
 						<c:if test="${fn:length(listNewProd) gt 2}">
@@ -159,7 +174,8 @@
 								if (user != null && UserRole.USER.isRole(user)) {
 							%>
 							<c:choose>
-								<c:when test="${prodInCart.containsKey(recProd.productId += '')}">
+								<c:when
+									test="${prodInCart.containsKey(recProd.productId += '')}">
 									<div class="add-to-cart">
 										<a href="#" data-balloon="สินค้าอยู๋ในตะกร้าแล้ว"
 											data-balloon-pos="right"><span

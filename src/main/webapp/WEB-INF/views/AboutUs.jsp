@@ -34,7 +34,7 @@
 					<div class="row">
 						<div class="col-md-6">
 							<img width="400px"
-								src="/Images/banner/about-us.jpg" />
+								src="/Images/AboutUs/<%= general.getImgUrl() %>" />
 						</div>
 						<div class="col-md-6">
 							<div class="row">

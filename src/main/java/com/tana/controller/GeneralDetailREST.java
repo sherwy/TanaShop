@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tana.Repositories.AccountRepository;
+import com.tana.Repositories.ConfigWebRepository;
 import com.tana.Repositories.GeneralDetailRepository;
 import com.tana.Repositories.OrdersRepository;
 import com.tana.Repositories.ProductRepository;
 import com.tana.Repositories.WelcomeDetailRepository;
 import com.tana.entities.Account;
+import com.tana.entities.ConfigWeb;
 import com.tana.entities.GeneralDetail;
 import com.tana.entities.OrderLine;
 import com.tana.entities.Orders;
@@ -49,6 +51,9 @@ public class GeneralDetailREST {
 	@Autowired
 	private OrdersRepository ordersManager;
 	
+	@Autowired
+	ConfigWebRepository configManager;
+	
 	@RequestMapping(value="/generalDetailShop",method = RequestMethod.GET)
 	public ResponseEntity<GeneralDetail> getDetail() {
 		GeneralDetail detail = generalDetailManager.getLastest();
@@ -76,6 +81,18 @@ public class GeneralDetailREST {
 			detail.setWelcomeText("<b>Welcome to my shop</b>");
 		}
 		return new ResponseEntity<>(detail,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/configWeb",method = RequestMethod.GET)
+	public ResponseEntity<ConfigWeb> getConfigWeb() {
+		ConfigWeb config = configManager.getLastest();
+		if(config == null){
+			config = new ConfigWeb();
+			config.setFooterColor("#000000");
+			config.setBannerImg("banner.jpg");
+			config.setBgImg("bg.jpg");
+		}
+		return new ResponseEntity<>(config,HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/getCart",method = RequestMethod.GET)

@@ -4,10 +4,8 @@
 </jsp:include>
 <%@ page language="java" contentType="text/html; charset=TIS-620"
 	pageEncoding="UTF-8"%>
-	<script type="text/javascript"
-	src="/Tools/cbrte/html2xhtml.min.js"></script>
-<script type="text/javascript"
-	src="/Tools/cbrte/richtext.js"></script>
+<script type="text/javascript" src="/Tools/cbrte/html2xhtml.min.js"></script>
+<script type="text/javascript" src="/Tools/cbrte/richtext.js"></script>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <b>แก้ไขสินค้า</b>
@@ -22,7 +20,6 @@
 				frm.productName.focus();
 				return false;
 			}
-			
 
 			if (frm.price.value == "") {
 				alert("กรุณากรอกราคาสินค้า");
@@ -81,7 +78,7 @@
 									<c:forEach items="${categoryQuery.listChildCategory }"
 										var="categoryQueryChild">
 										<option value="${categoryQueryChild.categoryId }"
-											<c:choose> <c:when test="${product.category.categoryId == categoryQuery.categoryId}"> selected</c:when></c:choose>>&nbsp;
+											<c:choose> <c:when test="${product.category.categoryId == categoryQueryChild.categoryId}"> selected</c:when></c:choose>>&nbsp;
 											-${categoryQueryChild.categoryName }</option>
 									</c:forEach>
 								</c:forEach>

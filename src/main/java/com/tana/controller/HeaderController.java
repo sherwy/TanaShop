@@ -1,9 +1,7 @@
 package com.tana.controller;
 
-import java.util.HashMap;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +15,8 @@ import com.tana.Repositories.ProductRepository;
 import com.tana.Repositories.WelcomeDetailRepository;
 import com.tana.entities.Account;
 import com.tana.entities.OrderCategory;
-import com.tana.entities.OrderLine;
-import com.tana.entities.Orders;
 import com.tana.entities.Product;
 import com.tana.utilities.ProductStatusUtilities;
-import com.tana.utilities.SessionUtility;
 
 public class HeaderController {
 

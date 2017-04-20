@@ -10,11 +10,13 @@
 <%@page import="com.tana.entities.*"%>
 <%
 	String generalDetailJson = JsonReader.readUrl("http://localhost:8081/rest/generalDetailShop");
+	String configJson = JsonReader.readUrl("http://localhost:8081/rest/configWeb");
 	Gson gson = new Gson();
 	GeneralDetail general = gson.fromJson(generalDetailJson, GeneralDetail.class);
+	ConfigWeb configWeb = gson.fromJson(configJson,ConfigWeb.class);
 	Account user = (Account) session.getAttribute("user");
 %>
-<div class="row footerBlock">
+<div class="row footerBlock" style="background-color:<%= configWeb.getFooterColor()%>">
 	<div class="col-md-3"></div>
 	<div class="col-md-3">
 		<b>ติดต่อ Tel : </b><%=general.getShopTelephone()%></div>
@@ -26,7 +28,7 @@
 	</div>
 </div>
 <div class="col-md-3"></div>
-<div class="row footerBlock">
+<div class="row footerBlock"  style="background-color:<%= configWeb.getFooterColor()%>">
 	<div class="col-md-12">
 		<div class="collapse navbar-collapse" id="menunav-all">
 			<ul class="nav navbar-nav menuNavBlock ">
@@ -38,7 +40,6 @@
 				<li class="menuNav"><a href="/howTo">วิธีการสั่งซื้อ</a></li>
 				<li class="menuNav"><a href="/aboutUs">เกี่ยวกับเรา</a></li>
 				<%
-					
 					} else if (user != null && user.getRole().equals(UserRole.USER.getRole())) {
 				%>
 
